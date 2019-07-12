@@ -3,7 +3,7 @@
   "title": "Gamemaster FOW",
   "description": "This module reduces the opacity of the FOW for the GM.",
   "version": "0.1.3",
-  "author": "trdischat",
+  "author": "trdischat, KaKaRoTo",
   "scripts": ["lessfog.js"],
   "styles": [],
   "packs": [],
