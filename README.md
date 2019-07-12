@@ -1,4 +1,5 @@
 # lessfog
-FVTT module to enhance visibility for the GM
+Module to enhance visibility for the GM in Foundry VTT
 
-![Compare GM view to Player view with lessfog enabled][lessfog.jpg]
+![Illustrate effect of lessfog module](lessfog.jpg "Compare GM view to Player view with lessfog enabled")
+
