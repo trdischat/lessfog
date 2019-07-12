@@ -8,6 +8,6 @@
   "styles": [],
   "packs": [],
   "url": "https://github.com/trdischat/lessfog",
-  "manifest": "https://github.com/trdischat/lessfog/module.json",
-  "download": "https://github.com/trdischat/lessfog/lessfog.zip"
+  "manifest": "https://github.com/trdischat/lessfog/raw/master/module.json",
+  "download": "https://github.com/trdischat/lessfog/raw/master/lessfog.zip"
 }
