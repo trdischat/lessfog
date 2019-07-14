@@ -1,3 +1,12 @@
+/**
+ * Utility function used by patch functions to alter specific lines in a class
+ * @param {Class} klass           Class to be patched
+ * @param {Function} func         Function in the class to be patched
+ * @param {Number} line_number    Line within the function to be patched
+ * @param {String} line           Existing text of line to be patched
+ * @param {String} new_line       Replacement text for line to be patched
+ * @returns {Class}              Revised class
+ */
 function patchClass(klass, func, line_number, line, new_line) {
     let funcStr = func.toString()
     let lines = funcStr.split("\n")
@@ -11,9 +20,10 @@ function patchClass(klass, func, line_number, line, new_line) {
     }
 }
 
+/**
+ * Patch SightLayer class to allow GM to see through the FOW and to see all tokens on the canvas
+ */
 function patchSightLayerClass() {
-    oldDraw = SightLayer.prototype.draw.toString()
-    oldRestrictVisibility = SightLayer.prototype.restrictVisibility.toString()
     newClass = patchClass(SightLayer, SightLayer.prototype.draw, 8,
       "unexplored: 1.0,",
       "unexplored: game.user.isGM ? ( this.fogExploration ? 0.5 : 0.0 ) : 1.0,");
@@ -27,10 +37,7 @@ function patchSightLayerClass() {
       `if ( !game.user.isGM )
        // Tokens`);
     if (!newClass) return;
-
     SightLayer = newClass
-//    console.log("Changed function : \n", oldDraw, "\nInto : \n", SightLayer.prototype.draw.toString())
-//    console.log("Changed function : \n", oldRestrictVisibility, "\nInto : \n", SightLayer.prototype.restrictVisibility.toString())
 }
 
 patchSightLayerClass()
