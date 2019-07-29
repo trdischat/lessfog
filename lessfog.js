@@ -41,4 +41,7 @@ function patchSightLayerClass() {
     SightLayer = newClass
 }
 
-patchSightLayerClass()
+if (patchedSightLayerClass == undefined) {
+  patchSightLayerClass();
+  var patchedSightLayerClass = true;
+}
