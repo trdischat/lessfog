@@ -44,8 +44,8 @@ function patchSightLayerClass() {
     if (!newClass) return;
 // Heavily blur edge between bright and dim areas.
     newClass = patchClass(newClass, SightLayer.prototype._drawShadowMap, 6,
-      `source.mask = source.fov;`,
-      `source.mask = source.fov;
+      `source.light.mask = source.fov;`,
+      `source.light.mask = source.fov;
       if (hex == this.queues.bright.hex) source.filters = game.settings.get("core", "softShadows") ? [new PIXI.filters.BlurFilter(15)] : null;`);
     if (!newClass) return;
 // Reveal all tokens to the GM. 
