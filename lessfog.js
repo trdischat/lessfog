@@ -30,16 +30,13 @@ function patchSightLayerClass() {
 
 // Hide unexplored areas from players at all times.
 // GM view is half shaded when fogExploration is enabled.
-    newClass = patchClass(SightLayer, SightLayer.prototype.draw, 9,
-      `if ( game.user.isGM ) this.alphas.unexplored = 0.7;`,
-      `this.alphas.unexplored = game.user.isGM ? ( this.fogExploration ? 0.6 : 0.0 ) : 1.0;`);
-    if (!newClass) return;
 // Reveal previously explored dark areas if fogExploration is true. 
 // GM shading calibrated to match setting for unexplored areas.
 // dark = 1 - ((1 - 0.6) * (1 - 0.6)) if fogExploration is false.
-    newClass = patchClass(newClass, newClass.prototype.draw, 10,
+    newClass = patchClass(SightLayer, SightLayer.prototype.draw, 9,
       `if ( !this.fogExploration ) this.alphas.dark = this.alphas.unexplored;`,
-      `this.alphas.dark = this.fogExploration ? 0.6 : ( game.user.isGM  ? 0.84 : 1.0 );
+      `this.alphas.unexplored = game.user.isGM ? ( this.fogExploration ? 0.6 : 0.0 ) : 1.0;
+			this.alphas.dark = this.fogExploration ? 0.6 : ( game.user.isGM  ? 0.84 : 1.0 );
       this.alphas.dim = 0.3;`);
     if (!newClass) return;
 // Heavily blur edge between bright and dim areas.
