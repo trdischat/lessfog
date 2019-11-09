@@ -2,7 +2,7 @@
   "name": "lessfog",
   "title": "Gamemaster FOW",
   "description": "This module adjusts the appearance of the FOW for the GM.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": "trdischat",
   "scripts": ["lessfog.js"],
   "styles": [],

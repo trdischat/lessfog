@@ -28,19 +28,24 @@ function patchClass(klass, func, line_number, line, new_line) {
  */
 function patchSightLayerClass() {
 
+// Set default alphas in draw function.
+// Otherwise patch fails because patched SightLayer class lacks DEFAULT_ALPHAS.
+// gmUnexplored = 1 - (1 - dark)^2
+    newClass = patchClass(SightLayer, SightLayer.prototype.draw, 9,
+      `this.alphas = duplicate(this.constructor.DEFAULT_ALPHAS);`,
+      `this.alphas = {unexplored: 1.0, gmUnexplored: 0.84, dark: 0.6, dim: 0.3, bright: 0.0};`);
+    if (!newClass) return;
 // Hide unexplored areas from players at all times.
 // GM view is half shaded when fogExploration is enabled.
-    newClass = patchClass(SightLayer, SightLayer.prototype.draw, 9,
-      `if ( game.user.isGM ) this.alphas.unexplored = 0.7;`,
-      `this.alphas.unexplored = game.user.isGM ? ( this.fogExploration ? 0.6 : 0.0 ) : 1.0;`);
+    newClass = patchClass(newClass, newClass.prototype.draw, 10,
+      `this.alphas.unexplored = game.user.isGM ? this.alphas.gmUnexplored : this.alphas.unexplored;`,
+      `this.alphas.unexplored = game.user.isGM ? ( this.fogExploration ? this.alphas.dark : 0.0 ) : this.alphas.unexplored;`);
     if (!newClass) return;
 // Reveal previously explored dark areas if fogExploration is true. 
 // GM shading calibrated to match setting for unexplored areas.
-// dark = 1 - ((1 - 0.6) * (1 - 0.6)) if fogExploration is false.
-    newClass = patchClass(newClass, newClass.prototype.draw, 10,
-      `if ( !this.fogExploration ) this.alphas.dark = this.alphas.unexplored;`,
-      `this.alphas.dark = this.fogExploration ? 0.6 : ( game.user.isGM  ? 0.84 : 1.0 );
-      this.alphas.dim = 0.3;`);
+    newClass = patchClass(newClass, newClass.prototype.draw, 11,
+      `this.alphas.dark = this.fogExploration ? this.alphas.dark : this.alphas.unexplored;`,
+      `this.alphas.dark = this.fogExploration ? this.alphas.dark : ( game.user.isGM  ? this.alphas.gmUnexplored : this.alphas.unexplored );`);
     if (!newClass) return;
 // Heavily blur edge between bright and dim areas.
     newClass = patchClass(newClass, SightLayer.prototype._drawShadowMap, 6,
