@@ -6,6 +6,8 @@ Module to enhance visibility for the GM in Foundry VTT
 # Installation
 See https://github.com/foundry-vtt-community/wiki/wiki/Modules#installing-modules. Open the Add-on Modules tab in the Configuration and Setup dialog. Click Install Module, paste `https://raw.githubusercontent.com/trdischat/lessfog/master/module.json` in as the Manifest URL, then click Install.
 
+To use this module with FVTT version 0.3.9, first edit `module.json` and set `minimumCoreVersion` to `0.3.9`.
+
 As DM go to the `Manage Modules` options menu in the Game Settings for your World, then enable the `Gamemaster FOW` module.
 
 # License
