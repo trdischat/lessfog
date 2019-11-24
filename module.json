@@ -2,12 +2,13 @@
   "name": "lessfog",
   "title": "Gamemaster FOW",
   "description": "This module adjusts the appearance of the FOW for the GM.",
-  "version": "0.2.3",
+  "version": "0.4.1",
+  "minimumCoreVersion": "0.4.1",
   "author": "trdischat",
   "scripts": ["lessfog.js"],
   "styles": [],
   "packs": [],
   "url": "https://github.com/trdischat/lessfog",
-  "manifest": "https://github.com/trdischat/lessfog/raw/master/module.json",
-  "download": "https://github.com/trdischat/lessfog/raw/master/lessfog.zip"
+  "manifest": "https://raw.githubusercontent.com/trdischat/lessfog/master/module.json",
+  "download": "https://github.com/trdischat/lessfog/archive/master.zip"
 }
