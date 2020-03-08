@@ -5,7 +5,7 @@
  * @param {Number} line_number    Line within the function to be patched
  * @param {String} line           Existing text of line to be patched
  * @param {String} new_line       Replacement text for line to be patched
- * @returns {Class}              Revised class
+ * @returns {Class}               Revised class
  */
 function patchClass(klass, func, line_number, line, new_line) {
   let funcStr = func.toString()
@@ -13,7 +13,7 @@ function patchClass(klass, func, line_number, line, new_line) {
   if (lines[line_number].trim() == line.trim()) {
     lines[line_number] = lines[line_number].replace(line, new_line);
     classStr = klass.toString()
-    fixedClass = classStr.replace(funcStr, lines.join("\n"))
+    fixedClass = classStr.replace(funcStr, function(m) {return lines.join("\n")})
     return Function('"use strict";return (' + fixedClass + ')')();
   }
   else {
@@ -23,46 +23,69 @@ function patchClass(klass, func, line_number, line, new_line) {
 
 /**
  * Patch the SightLayer class to tweak the FOW transparency for the GM,
- * optimize contrast between dim, dark, and unexplored areas, blend dim
- * and bright areas, and let the GM see all tokens on the canvas.
+ * optimize contrast between bright, dim, dark, explored, and unexplored areas, 
+ * and let the GM see all tokens on the canvas.
  */
 function patchSightLayerClass() {
-
-// Set default alphas in draw function.
-// Otherwise patch fails because patched SightLayer class lacks DEFAULT_ALPHAS.
-// gmUnexplored = 1 - (1 - dark)^2
-    newClass = patchClass(SightLayer, SightLayer.prototype.draw, 9,
-      `this.alphas = duplicate(this.constructor.DEFAULT_ALPHAS);`,
-      `this.alphas = {unexplored: 1.0, gmUnexplored: 0.84, dark: 0.6, dim: 0.3, bright: 0.0};`);
-    if (!newClass) return;
-// Hide unexplored areas from players at all times.
-// GM view is half shaded when fogExploration is enabled.
-    newClass = patchClass(newClass, newClass.prototype.draw, 10,
-      `this.alphas.unexplored = game.user.isGM ? this.alphas.gmUnexplored : this.alphas.unexplored;`,
-      `this.alphas.unexplored = game.user.isGM ? ( this.fogExploration ? this.alphas.dark : 0.0 ) : this.alphas.unexplored;`);
-    if (!newClass) return;
-// Reveal previously explored dark areas if fogExploration is true. 
-// GM shading calibrated to match setting for unexplored areas.
-    newClass = patchClass(newClass, newClass.prototype.draw, 11,
-      `this.alphas.dark = this.fogExploration ? this.alphas.dark : this.alphas.unexplored;`,
-      `this.alphas.dark = this.fogExploration ? this.alphas.dark : ( game.user.isGM  ? this.alphas.gmUnexplored : this.alphas.unexplored );`);
-    if (!newClass) return;
-// Heavily blur edge between bright and dim areas.
-    newClass = patchClass(newClass, SightLayer.prototype._drawShadowMap, 6,
-      `source.light.mask = source.fov;`,
-      `source.light.mask = source.fov;
-      if (hex == this.queues.bright.hex) source.filters = game.settings.get("core", "softShadows") ? [new PIXI.filters.BlurFilter(15)] : null;`);
-    if (!newClass) return;
-// Reveal all tokens to the GM. 
-    newClass = patchClass(newClass, SightLayer.prototype.restrictVisibility, 2,
-      "// Tokens",
-      `// Tokens
-      if ( !game.user.isGM )`);
-    if (!newClass) return;
-    SightLayer = newClass
+  // Modify default alphas.
+  newClass = patchClass(SightLayer, SightLayer.prototype._configureChannels, 4,
+    `black: { alpha: 1.0 },`,
+    `black: { alpha: game.user.isGM ? 0.88 : 1.0 },`);
+  if (!newClass) return;
+  newClass = patchClass(newClass, newClass.prototype._configureChannels, 5,
+    `explored: { alpha: 0.9 },`,
+    `explored: { alpha: 0.76 },`);
+  if (!newClass) return;
+  newClass = patchClass(newClass, newClass.prototype._configureChannels, 6,
+    `dark: { alpha: 0.7 },`,
+    `dark: { alpha: 0.6 },`);
+  if (!newClass) return;
+  newClass = patchClass(newClass, newClass.prototype._configureChannels, 7,
+    `dim: { alpha: 0.5 },`,
+    `dim: { alpha: 0.4 },`);
+  if (!newClass) return;
+  // Reveal all tokens to the GM. 
+  newClass = patchClass(newClass, SightLayer.prototype.restrictVisibility, 2,
+    "// Tokens",
+    `// Tokens
+    if ( !game.user.isGM )`);
+  if (!newClass) return;
+  SightLayer = newClass
 }
-
+  
 if (patchedSightLayerClass == undefined) {
   patchSightLayerClass();
   var patchedSightLayerClass = true;
+}
+
+/**
+ * Patch the Canvas class to increase soft shadow blur.
+ */
+function patchCanvasClass() {
+  newClass = patchClass(Canvas, Canvas.prototype.pan, 24,
+    `canvas.sight.blurDistance = 20 / (CONFIG.Canvas.maxZoom - Math.round(scale) + 1)`,
+    `canvas.sight.blurDistance = 60 / (CONFIG.Canvas.maxZoom - Math.round(scale) + 1)`);
+  if (!newClass) return;
+  Canvas = newClass
+}
+  
+if (patchedCanvasClass == undefined) {
+  patchCanvasClass();
+  var patchedCanvasClass = true;
+}  
+
+/**
+ * Patch the LightingLayer class to increase blur on light tinting.
+ */
+function patchLightingLayerClass() {
+  newClass = patchClass(LightingLayer, LightingLayer.prototype._drawLightingContainer, 11,
+    `const bf = new PIXI.filters.BlurFilter(16);`,
+    `const bf = new PIXI.filters.BlurFilter(32);`);
+  if (!newClass) return;
+  LightingLayer = newClass
+}
+
+if (patchedLightingLayerClass == undefined) {
+  patchLightingLayerClass();
+  var patchedLightingLayerClass = true;
 }
