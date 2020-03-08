@@ -3,11 +3,11 @@ Module to enhance visibility for the GM in Foundry VTT.  Below is the default vi
 
 ![Default view](default.jpg)
 
-The `lessfog` module tweaks the light levels and shadow blur in player view below.
+The `lessfog` module tweaks the light levels and shadow blur in the player view below.
 
 ![Player view](player.jpg)
 
-In the GM view below, the `lessfog` modules reveals unexplored areas and tokens anywhere on the canvas for the GM only.
+In the GM view below, the `lessfog` modules reveals (to the GM only) any unexplored areas, as well as tokens anywhere on the canvas.
 
 ![GM view](gm.jpg)
 
