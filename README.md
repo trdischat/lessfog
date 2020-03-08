@@ -7,7 +7,7 @@ The `lessfog` module tweaks the light levels and shadow blur in the player view 
 
 ![Player view](player.jpg)
 
-In the GM view below, the `lessfog` modules reveals (to the GM only) any unexplored areas, as well as tokens anywhere on the canvas.
+In the GM view below, the `lessfog` module reveals (to the GM only) any unexplored areas, as well as tokens anywhere on the canvas.
 
 ![GM view](gm.jpg)
 
