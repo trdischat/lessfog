@@ -64,7 +64,7 @@ if (patchedSightLayerClass == undefined) {
 function patchCanvasClass() {
   newClass = patchClass(Canvas, Canvas.prototype.pan, 24,
     `canvas.sight.blurDistance = 20 / (CONFIG.Canvas.maxZoom - Math.round(scale) + 1)`,
-    `canvas.sight.blurDistance = 60 / (CONFIG.Canvas.maxZoom - Math.round(scale) + 1)`);
+    `canvas.sight.blurDistance = 12 * scale`);
   if (!newClass) return;
   Canvas = newClass
 }
