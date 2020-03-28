@@ -1,91 +1,98 @@
 /**
- * Utility function used by patch functions to alter specific lines in a class
- * @param {Class} klass           Class to be patched
- * @param {Function} func         Function in the class to be patched
- * @param {Number} line_number    Line within the function to be patched
- * @param {String} line           Existing text of line to be patched
- * @param {String} new_line       Replacement text for line to be patched
- * @returns {Class}               Revised class
+ * Adjust the FOW transparency for the GM, and optimize contrast
+ * between bright, dim, dark, explored, and unexplored areas.
  */
-function patchClass(klass, func, line_number, line, new_line) {
-  let funcStr = func.toString()
-  let lines = funcStr.split("\n")
-  if (lines[line_number].trim() == line.trim()) {
-    lines[line_number] = lines[line_number].replace(line, new_line);
-    classStr = klass.toString()
-    fixedClass = classStr.replace(funcStr, function(m) {return lines.join("\n")})
-    return Function('"use strict";return (' + fixedClass + ')')();
+SightLayer.prototype._configureChannels = function() {
+  // Set up the default channel order and alphas (with no darkness)
+  const channels = {
+    black: { alpha: game.user.isGM ? 0.88 : 1.0 },   // ! Changed line
+    explored: { alpha: 0.76 },                       // ! Changed line
+    dark: { alpha: 0.6 },                            // ! Changed line
+    dim: { alpha: 0.4 },                             // ! Changed line
+    bright: { alpha: 0.0 }
+  };
+
+  // Modify alpha levels for darkness value and compute hex code
+  for ( let c of Object.values(channels) ) {
+    c.hex = PIXI.utils.rgb2hex([c.alpha, c.alpha, c.alpha]);
   }
-  else {
-    console.log("Function has wrong content at line ", line_number, " : ", lines[line_number].trim(), " != ", line.trim(), "\n", funcStr)
+  return channels;
+}
+
+/**
+ * Allow the GM to see all tokens.
+ */
+SightLayer.prototype.restrictVisibility = function() {
+
+  // Tokens
+  if ( !game.user.isGM ) {                           // ! New line
+    for ( let t of canvas.tokens.placeables ) {
+      t.visible = ( !this.tokenVision && !t.data.hidden ) || t.isVisible;
+    }
+  }                                                  // ! New line
+
+  // Door Icons
+  for ( let d of canvas.controls.doors.children ) {
+    d.visible = !this.tokenVision || d.isVisible;
   }
 }
 
 /**
- * Patch the SightLayer class to tweak the FOW transparency for the GM,
- * optimize contrast between bright, dim, dark, explored, and unexplored areas, 
- * and let the GM see all tokens on the canvas.
+ * Change scaling of soft shadow blur.
  */
-function patchSightLayerClass() {
-  // Modify default alphas.
-  newClass = patchClass(SightLayer, SightLayer.prototype._configureChannels, 4,
-    `black: { alpha: 1.0 },`,
-    `black: { alpha: game.user.isGM ? 0.88 : 1.0 },`);
-  if (!newClass) return;
-  newClass = patchClass(newClass, newClass.prototype._configureChannels, 5,
-    `explored: { alpha: 0.9 },`,
-    `explored: { alpha: 0.76 },`);
-  if (!newClass) return;
-  newClass = patchClass(newClass, newClass.prototype._configureChannels, 6,
-    `dark: { alpha: 0.7 },`,
-    `dark: { alpha: 0.6 },`);
-  if (!newClass) return;
-  newClass = patchClass(newClass, newClass.prototype._configureChannels, 7,
-    `dim: { alpha: 0.5 },`,
-    `dim: { alpha: 0.4 },`);
-  if (!newClass) return;
-  // Reveal all tokens to the GM. 
-  newClass = patchClass(newClass, SightLayer.prototype.restrictVisibility, 2,
-    "// Tokens",
-    `// Tokens
-    if ( !game.user.isGM )`);
-  if (!newClass) return;
-  SightLayer = newClass
-}
-  
-if (patchedSightLayerClass == undefined) {
-  patchSightLayerClass();
-  var patchedSightLayerClass = true;
+Canvas.prototype.pan = function({x=null, y=null, scale=null}={}) {
+  // Pan the canvas to the new destination
+  x = Number(x) || this.stage.pivot.x;
+  y = Number(y) || this.stage.pivot.y;
+  this.stage.pivot.set(x, y);
+
+  // Zoom the canvas to the new level
+  if ( Number.isNumeric(scale) && scale !== this.stage.scale.x ) {
+    scale = this._constrainScale(scale);
+    this.stage.scale.set(scale, scale);
+  } else scale = this.stage.scale.x;
+
+  // Update the scene tracked position
+  canvas.scene._viewPosition = { x:x , y:y, scale:scale };
+
+  // Call canvasPan Hook
+  Hooks.callAll("canvasPan", this, {x, y, scale});
+
+  // Align the HUD
+  this.hud.align();
+
+  // Adjust the level of blur as we zoom out
+  if ( scale ) {
+    canvas.sight.blurDistance = 12 * scale           // ! Changed line
+  }
 }
 
 /**
- * Patch the Canvas class to increase soft shadow blur.
+ * Increase blur on light tinting.
  */
-function patchCanvasClass() {
-  newClass = patchClass(Canvas, Canvas.prototype.pan, 24,
-    `canvas.sight.blurDistance = 20 / (CONFIG.Canvas.maxZoom - Math.round(scale) + 1)`,
-    `canvas.sight.blurDistance = 12 * scale`);
-  if (!newClass) return;
-  Canvas = newClass
-}
-  
-if (patchedCanvasClass == undefined) {
-  patchCanvasClass();
-  var patchedCanvasClass = true;
-}  
+LightingLayer.prototype._drawLightingContainer = function() {
+  const c = new PIXI.Container();
+  const d = canvas.dimensions;
 
-/**
- * Patch the LightingLayer class to increase blur on light tinting.
- */
-function patchLightingLayerClass() {
-  newClass = patchClass(LightingLayer, LightingLayer.prototype._drawLightingContainer, 11,
-    `const bf = new PIXI.filters.BlurFilter(16);`,
-    `const bf = new PIXI.filters.BlurFilter(32);`);
-  if (!newClass) return;
-  LightingLayer = newClass
-}
+  // Define the underlying darkness
+  c.darkness = c.addChild(new PIXI.Graphics());
 
-if (patchedLightingLayerClass == undefined) {
-  patchLightingLayerClass();
-  var patchedLightingLayerClass = true;
+  // Define the overlay lights
+  c.lights = c.addChild(new PIXI.Graphics());
+
+  // Apply blur to the lights only
+  const bf = new PIXI.filters.BlurFilter(32);        // ! Changed line
+  bf.padding = 256;
+  if ( game.settings.get("core", "softShadows") ) c.lights.filters = [bf];
+
+  // Apply alpha filter to the parent container
+  const af = new PIXI.filters.AlphaFilter(1.0);
+  af.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+  c.filters = [af];
+
+  // Mask the container by the outer rectangle
+  const mask = c.addChild(new PIXI.Graphics());
+  mask.beginFill(0xFFFFFF, 1.0).drawRect(0, 0, d.width, d.height).endFill();
+  c.mask = mask;
+  return c;
 }
