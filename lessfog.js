@@ -25,11 +25,9 @@ SightLayer.prototype._configureChannels = function() {
 SightLayer.prototype.restrictVisibility = function() {
 
   // Tokens
-  if ( !game.user.isGM ) {                           // ! New line
-    for ( let t of canvas.tokens.placeables ) {
-      t.visible = ( !this.tokenVision && !t.data.hidden ) || t.isVisible;
-    }
-  }                                                  // ! New line
+  for ( let t of canvas.tokens.placeables ) {
+    t.visible = ( !this.tokenVision && !t.data.hidden ) || game.user.isGM || t.isVisible;  // ! Changed line
+  }
 
   // Door Icons
   for ( let d of canvas.controls.doors.children ) {
