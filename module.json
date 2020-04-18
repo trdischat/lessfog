@@ -4,6 +4,7 @@
   "description": "This module adjusts the appearance of the FOW for the GM.",
   "version": "0.5.1.4",
   "minimumCoreVersion": "0.5.1",
+  "compatibleCoreVersion": "0.5.5",
   "author": "trdischat",
   "scripts": ["lessfog.js"],
   "styles": [],
