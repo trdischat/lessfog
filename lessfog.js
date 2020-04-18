@@ -71,6 +71,8 @@ Canvas.prototype.pan = function({x=null, y=null, scale=null}={}) {
 LightingLayer.prototype._drawLightingContainer = function() {
   const c = new PIXI.Container();
   const d = canvas.dimensions;
+  c.width = d.width;
+  c.height = d.height;
 
   // Define the underlying darkness
   c.darkness = c.addChild(new PIXI.Graphics());
@@ -80,7 +82,6 @@ LightingLayer.prototype._drawLightingContainer = function() {
 
   // Apply blur to the lights only
   const bf = new PIXI.filters.BlurFilter(32);        // ! Changed line
-  bf.padding = 256;
   if ( game.settings.get("core", "softShadows") ) c.lights.filters = [bf];
 
   // Apply alpha filter to the parent container
