@@ -20,78 +20,28 @@ SightLayer.prototype._configureChannels = function() {
 }
 
 /**
- * Allow the GM to see all tokens.
+ * Patch functions.
  */
-SightLayer.prototype.restrictVisibility = function() {
-
-  // Tokens
-  for ( let t of canvas.tokens.placeables ) {
-    t.visible = ( !this.tokenVision && !t.data.hidden ) || game.user.isGM || t.isVisible;  // ! Changed line
-  }
-
-  // Door Icons
-  for ( let d of canvas.controls.doors.children ) {
-    d.visible = !this.tokenVision || d.isVisible;
-  }
-}
-
-/**
- * Change scaling of soft shadow blur.
- */
-Canvas.prototype.pan = function({x=null, y=null, scale=null}={}) {
-  // Pan the canvas to the new destination
-  x = Number(x) || this.stage.pivot.x;
-  y = Number(y) || this.stage.pivot.y;
-  this.stage.pivot.set(x, y);
-
-  // Zoom the canvas to the new level
-  if ( Number.isNumeric(scale) && scale !== this.stage.scale.x ) {
-    scale = this._constrainScale(scale);
-    this.stage.scale.set(scale, scale);
-  } else scale = this.stage.scale.x;
-
-  // Update the scene tracked position
-  canvas.scene._viewPosition = { x:x , y:y, scale:scale };
-
-  // Call canvasPan Hook
-  Hooks.callAll("canvasPan", this, {x, y, scale});
-
-  // Align the HUD
-  this.hud.align();
-
-  // Adjust the level of blur as we zoom out
-  if ( scale ) {
-    canvas.sight.blurDistance = 12 * scale           // ! Changed line
-  }
-}
-
-/**
- * Increase blur on light tinting.
- */
-LightingLayer.prototype._drawLightingContainer = function() {
-  const c = new PIXI.Container();
-  const d = canvas.dimensions;
-  c.width = d.width;
-  c.height = d.height;
-
-  // Define the underlying darkness
-  c.darkness = c.addChild(new PIXI.Graphics());
-
-  // Define the overlay lights
-  c.lights = c.addChild(new PIXI.Graphics());
-
-  // Apply blur to the lights only
-  const bf = new PIXI.filters.BlurFilter(32);        // ! Changed line
-  if ( game.settings.get("core", "softShadows") ) c.lights.filters = [bf];
-
-  // Apply alpha filter to the parent container
-  const af = new PIXI.filters.AlphaFilter(1.0);
-  af.blendMode = PIXI.BLEND_MODES.MULTIPLY;
-  c.filters = [af];
-
-  // Mask the container by the outer rectangle
-  const mask = c.addChild(new PIXI.Graphics());
-  mask.beginFill(0xFFFFFF, 1.0).drawRect(0, 0, d.width, d.height).endFill();
-  c.mask = mask;
-  return c;
-}
+Hooks.once("ready", function() {
+  // Allow the GM to see all tokens.
+  let newClass = SightLayer;
+  newClass = trPatchLib.patchMethod(newClass, "restrictVisibility", 4,
+    `t.visible = ( !this.tokenVision && !t.data.hidden ) || t.isVisible;`,
+    `t.visible = ( !this.tokenVision && !t.data.hidden ) || game.user.isGM || t.isVisible;`);
+  if (!newClass) return;
+  SightLayer.prototype.restrictVisibility = newClass.prototype.restrictVisibility;
+  // Change scaling of soft shadow blur.
+  newClass = Canvas;
+  newClass = trPatchLib.patchMethod(newClass, "pan", 24,
+    `canvas.sight.blurDistance = 20 / (CONFIG.Canvas.maxZoom - Math.round(scale) + 1)`,
+    `canvas.sight.blurDistance = 12 * scale`);
+  if (!newClass) return;
+  Canvas.prototype.pan = newClass.prototype.pan;
+  // Increase blur on light tinting.
+  newClass = LightingLayer;
+  newClass = trPatchLib.patchMethod(newClass, "_drawLightingContainer", 13,
+    `const bf = new PIXI.filters.BlurFilter(16);`,
+    `const bf = new PIXI.filters.BlurFilter(32);`);
+  if (!newClass) return;
+  LightingLayer.prototype._drawLightingContainer = newClass.prototype._drawLightingContainer;
+});
