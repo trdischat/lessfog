@@ -1,14 +1,56 @@
 /**
+ * Configuration for dim, dark, explored, and unexplored settings.
+ */
+Hooks.once("init", function() {
+  game.settings.register("lessfog", "alpha_unexplored", {
+    name: "Unexplored",
+    hint: "Darkness in unexplored areas (GM only)",
+    scope: "world",
+    type: Number,
+    default: 0.85,
+    config: true,
+    onChange: s => {canvas.draw();}
+  });
+  game.settings.register("lessfog", "alpha_explored", {
+    name: "Explored",
+    hint: "Darkness in explored areas",
+    scope: "world",
+    type: Number,
+    default: 0.75,
+    config: true,
+    onChange: s => {canvas.draw();}
+  });
+  game.settings.register("lessfog", "alpha_dark", {
+    name: "Dark",
+    hint: "Darkness in dark areas (not used)",
+    scope: "world",
+    type: Number,
+    default: 0.6,
+    config: true,
+    onChange: s => {canvas.draw();}
+  });
+  game.settings.register("lessfog", "alpha_dim", {
+    name: "Dim",
+    hint: "Darkness in dim areas",
+    scope: "world",
+    type: Number,
+    default: 0.4,
+    config: true,
+    onChange: s => {canvas.draw();}
+  });
+});
+
+/**
  * Adjust the FOW transparency for the GM, and optimize contrast
  * between bright, dim, dark, explored, and unexplored areas.
  */
 SightLayer.prototype._configureChannels = function() {
   // Set up the default channel order and alphas (with no darkness)
   const channels = {
-    black: { alpha: game.user.isGM ? 0.88 : 1.0 },   // ! Changed line
-    explored: { alpha: 0.76 },                       // ! Changed line
-    dark: { alpha: 0.6 },                            // ! Changed line
-    dim: { alpha: 0.4 },                             // ! Changed line
+    black: { alpha: game.user.isGM ? game.settings.get("lessfog", "alpha_unexplored") : 1.0 },   // ! Changed line
+    explored: { alpha: game.settings.get("lessfog", "alpha_explored") },                         // ! Changed line
+    dark: { alpha: game.settings.get("lessfog", "alpha_dark") },                                 // ! Changed line
+    dim: { alpha: game.settings.get("lessfog", "alpha_dim") },                                   // ! Changed line
     bright: { alpha: 0.0 }
   };
 
