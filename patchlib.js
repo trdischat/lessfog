@@ -16,7 +16,7 @@ if (typeof trPatchLib !== 'function') {
                     let classStr = klass.toString()
                     fixed = classStr.replace(funcStr, fixed)
                 } else {
-                    if (!fixed.startsWith("function"))
+                    if (!(fixed.startsWith("function") || fixed.startsWith("async function")))
                         fixed = "function " + fixed
                     if (fixed.startsWith("function async"))
                         fixed = fixed.replace("function async", "async function");
