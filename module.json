@@ -1,7 +1,7 @@
 {
   "name": "lessfog",
-  "title": "Less Fog for the GM",
-  "description": "This module adjusts the appearance of the FOW for the GM.",
+  "title": "Less Fog",
+  "description": "This module allows adjustments to the appearance of the FOW.",
   "version": "0.5.1.8",
   "minimumCoreVersion": "0.5.1",
   "compatibleCoreVersion": "0.5.7",

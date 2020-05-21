@@ -1,5 +1,5 @@
-# lessfog
-Module to enhance visibility for the GM in Foundry VTT.  Below is the default view in FVTT, showing bright, dim, explored, and unexpored areas **without** the `lessfog` module.
+# Less Fog
+Module to enhance visibility for the GM and players in Foundry VTT.  Below is the default view in FVTT, showing bright, dim, explored, and unexpored areas **without** the `lessfog` module.
 
 ![Default view](default.jpg)
 
