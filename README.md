@@ -14,7 +14,7 @@ In the GM view below, the `lessfog` module reveals (to the GM only) any unexplor
 # Installation
 See https://github.com/foundry-vtt-community/wiki/wiki/Modules#installing-modules. Open the Add-on Modules tab in the Configuration and Setup dialog. Click Install Module, paste `https://raw.githubusercontent.com/trdischat/lessfog/master/module.json` in as the Manifest URL, then click Install.
 
-As DM go to the `Manage Modules` options menu in the Game Settings for your World, then enable the `Gamemaster FOW` module.
+As DM go to the `Manage Modules` options menu in the Game Settings for your World, then enable the `Less Fog` module.
 
 This module requires FVTT version 0.5.1 or later.
 
