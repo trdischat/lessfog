@@ -65,6 +65,7 @@ SightLayer.prototype._configureChannels = function() {
  * Patch functions.
  */
 Hooks.once("ready", function() {
+  let patchLine = game.data.version == "0.6.0" ? 25 : 24;
   // Allow the GM to see all tokens.
   let newClass = SightLayer;
   newClass = trPatchLib.patchMethod(newClass, "restrictVisibility", 4,
@@ -74,7 +75,7 @@ Hooks.once("ready", function() {
   SightLayer.prototype.restrictVisibility = newClass.prototype.restrictVisibility;
   // Change scaling of soft shadow blur.
   newClass = Canvas;
-  newClass = trPatchLib.patchMethod(newClass, "pan", 24,
+  newClass = trPatchLib.patchMethod(newClass, "pan", patchLine,
     `canvas.sight.blurDistance = 20 / (CONFIG.Canvas.maxZoom - Math.round(scale) + 1)`,
     `canvas.sight.blurDistance = 12 * scale`);
   if (!newClass) return;
