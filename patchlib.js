@@ -9,21 +9,25 @@ if (typeof trPatchLib !== 'function') {
                 return;
             let funcStr = func.toString()
             let lines = funcStr.split("\n")
-            if (lines[line_number].trim() == line.trim()) {
-                lines[line_number] = lines[line_number].replace(line, new_line);
-                let fixed = lines.join("\n")
-                if (klass !== undefined) {
-                    let classStr = klass.toString()
-                    fixed = classStr.replace(funcStr, fixed)
-                } else {
-                    if (!(fixed.startsWith("function") || fixed.startsWith("async function")))
-                        fixed = "function " + fixed
-                    if (fixed.startsWith("function async"))
-                        fixed = fixed.replace("function async", "async function");
-                }
-                return Function('"use strict";return (' + fixed + ')')();
+            if (typeof(lines[line_number]) !== "undefined") {
+              if (lines[line_number].trim() == line.trim()) {
+                  lines[line_number] = lines[line_number].replace(line, new_line);
+                  let fixed = lines.join("\n")
+                  if (klass !== undefined) {
+                      let classStr = klass.toString()
+                      fixed = classStr.replace(funcStr, fixed)
+                  } else {
+                      if (!(fixed.startsWith("function") || fixed.startsWith("async function")))
+                          fixed = "function " + fixed
+                      if (fixed.startsWith("function async"))
+                          fixed = fixed.replace("function async", "async function");
+                  }
+                  return Function('"use strict";return (' + fixed + ')')();
+              } else {
+                  console.log("Cannot patch function. It has wrong content at line ", line_number, " : ", lines[line_number].trim(), " != ", line.trim(), "\n", funcStr)
+              }
             } else {
-                console.log("Cannot patch function. It has wrong content at line ", line_number, " : ", lines[line_number].trim(), " != ", line.trim(), "\n", funcStr)
+              console.log("Cannot patch function. lines[line_number] is undefined ", "\n", funcStr)
             }
         }
 
