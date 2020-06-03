@@ -1,5 +1,5 @@
 # Less Fog
-Module to enhance visibility for the GM and players in Foundry VTT.  Below is the default view in FVTT, showing bright, dim, explored, and unexpored areas **without** the `lessfog` module.
+Module to enhance visibility for the GM and players in Foundry VTT.  Below is the default view in FVTT, showing bright, dim, explored, and unexplored areas **without** the `lessfog` module.
 
 ![Default view](default.jpg)
 
@@ -16,7 +16,7 @@ See https://github.com/foundry-vtt-community/wiki/wiki/Modules#installing-module
 
 As DM go to the `Manage Modules` options menu in the Game Settings for your World, then enable the `Less Fog` module.
 
-This module requires FVTT version 0.5.1 or later.
+This module requires FVTT version 0.6.1 or later.
 
 # License
 This Foundry VTT module, writen by trdischat with major assistance from KaKaRoTo, is licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
