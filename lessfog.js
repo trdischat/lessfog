@@ -11,13 +11,6 @@ Hooks.once('init', async function () {
     // Register custom module settings
     registerSettings();
 
-});
-
-/* ------------------------------------ */
-/* When ready							*/
-/* ------------------------------------ */
-Hooks.once('ready', function () {
-
     /**
      * Adjust the FOW transparency for the GM, and optimize contrast
      * between bright, dim, dark, explored, and unexplored areas.
@@ -38,6 +31,13 @@ Hooks.once('ready', function () {
         }
         return channels;
     }
+
+});
+
+/* ------------------------------------ */
+/* When ready							*/
+/* ------------------------------------ */
+Hooks.once('ready', function () {
 
     // Allow the GM to see all tokens.
     let newClass = SightLayer;
