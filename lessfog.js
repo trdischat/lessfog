@@ -43,7 +43,7 @@ Hooks.once('ready', function () {
     let newClass = SightLayer;
     newClass = patchMethod(newClass, "restrictVisibility", 4,
         `t.visible = ( !this.tokenVision && !t.data.hidden ) || t.isVisible;`,
-        `t.visible = ( !this.tokenVision && !t.data.hidden ) || game.user.isGM || t.isVisible;`);
+        `t.visible = ( !this.tokenVision && !t.data.hidden ) || ( game.settings.get("lessfog", "reveal_tokens") && game.user.isGM ) || t.isVisible;`);
     if (!newClass) return;
     SightLayer.prototype.restrictVisibility = newClass.prototype.restrictVisibility;
     // Change scaling of soft shadow blur.

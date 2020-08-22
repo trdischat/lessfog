@@ -38,4 +38,16 @@ export const registerSettings = function () {
         config: true,
         onChange: s => { canvas.draw(); }
     });
+    /**
+     * Option to reveal tokens to the GM.
+     */
+    game.settings.register("lessfog", "reveal_tokens", {
+        name: "Reveal Tokens",
+        hint: "Reveal all tokens on the canvas to the GM at all times",
+        scope: "world",
+        type: Boolean,
+        default: true,
+        config: true,
+        onChange: s => { canvas.draw(); }
+    });
 }
