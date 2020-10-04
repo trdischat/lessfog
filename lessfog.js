@@ -32,6 +32,12 @@ Hooks.once('init', async function () {
             }
             return channels;
         }
+    } else {
+        CONFIG.Canvas.blurStrength = 16;
+        CONFIG.Canvas.darknessColor = game.settings.get("lessfog", "color_dark") ? game.settings.get("lessfog", "color_dark") : 0x403080;
+        CONFIG.Canvas.exploredColor = game.settings.get("lessfog", "color_explored") ? game.settings.get("lessfog", "color_explored") : 0x7f7f7f;
+        CONFIG.Canvas.unexploredColor = game.settings.get("lessfog", "color_unexplored") ? game.settings.get("lessfog", "color_unexplored") : 0x000000;
+        CONFIG.Canvas.lightLevels.dim = game.settings.get("lessfog", "level_dim");
     }
 });
 
@@ -47,14 +53,14 @@ Hooks.once('ready', function () {
         `t.visible = ( !this.tokenVision && !t.data.hidden ) || ( game.settings.get("lessfog", "reveal_tokens") && game.user.isGM ) || t.isVisible;`);
     if (!newClass) return;
     SightLayer.prototype.restrictVisibility = newClass.prototype.restrictVisibility;
-    // Change scaling of soft shadow blur.
-    newClass = Canvas;
-    newClass = patchMethod(newClass, "pan", 12,
-        `this.sight.blurDistance = 20 / (CONFIG.Canvas.maxZoom - Math.round(constrained.scale) + 1);`,
-        `this.sight.blurDistance = 12 * constrained.scale;`);
-    if (!newClass) return;
-    Canvas.prototype.pan = newClass.prototype.pan;
     if (isNewerVersion('0.7.3', game.data.version)) {
+        // Change scaling of soft shadow blur.
+        newClass = Canvas;
+        newClass = patchMethod(newClass, "pan", 12,
+            `this.sight.blurDistance = 20 / (CONFIG.Canvas.maxZoom - Math.round(constrained.scale) + 1);`,
+            `this.sight.blurDistance = 12 * constrained.scale;`);
+        if (!newClass) return;
+        Canvas.prototype.pan = newClass.prototype.pan;
         // Increase blur on light tinting.
         newClass = LightingLayer;
         newClass = patchMethod(newClass, "_drawLightingContainer", 13,
@@ -63,17 +69,25 @@ Hooks.once('ready', function () {
         if (!newClass) return;
         LightingLayer.prototype._drawLightingContainer = newClass.prototype._drawLightingContainer;
     } else {
-        // Adjust soft shadow blur.
-        CONFIG.Canvas.blurStrength = 16;
-        let expCol = 1.0 - game.settings.get("lessfog", "alpha_explored");
-        canvas.sight._exploredColor = rgbToHex([expCol, expCol, expCol+0.1]);
         // Adjust the FOW transparency for the GM.
         newClass = SightLayer;
-        newClass = patchMethod(newClass, "_drawFogContainer", 6,
-            `fog.unexplored.beginFill(0x000000, 1.0).drawRect(0, 0, d.width, d.height).endFill();`,
-            `fog.unexplored.beginFill(0x000000, game.user.isGM ? game.settings.get("lessfog", "alpha_unexplored") : 1.0).drawRect(0, 0, d.width, d.height).endFill();`);
+        newClass = patchMethod(newClass, "_drawFogContainer", 7,
+            `fog.unexplored.beginFill(CONFIG.Canvas.unexploredColor, 1.0).drawShape(r).endFill();`,
+            `let dRGB = hexToRGB(CONFIG.Canvas.darknessColor);
+            let uRGB = hexToRGB(game.user.isGM ? CONFIG.Canvas.unexploredColor : 0x000000);
+            let uColor = rgbToHex(dRGB.map((c, i) => uRGB[i] / ((1-canvas.scene.data.darkness) + (canvas.scene.data.darkness*c))));
+            fog.unexplored.beginFill(uColor, 1.0).drawShape(r).endFill();`);
         if (!newClass) return;
         SightLayer.prototype._drawFogContainer = newClass.prototype._drawFogContainer;
+        // Compensate for darkness setting in explored areas.
+        newClass = SightLayer;
+        newClass = patchMethod(newClass, "refresh", 10,
+            `prior.fov.tint = CONFIG.Canvas.exploredColor;`,
+            `let dRGB = hexToRGB(CONFIG.Canvas.darknessColor);
+            let eRGB = hexToRGB(CONFIG.Canvas.exploredColor);
+            prior.fov.tint = rgbToHex(dRGB.map((c, i) => eRGB[i] / ((1-canvas.scene.data.darkness) + (canvas.scene.data.darkness*c))));`);
+        if (!newClass) return;
+        SightLayer.prototype.refresh = newClass.prototype.refresh;
     }
     canvas.draw();
 
