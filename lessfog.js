@@ -89,6 +89,5 @@ Hooks.once('ready', function () {
         if (!newClass) return;
         SightLayer.prototype.refresh = newClass.prototype.refresh;
     }
-    canvas.draw();
 
 });
