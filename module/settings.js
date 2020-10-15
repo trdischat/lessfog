@@ -59,7 +59,7 @@ export const registerSettings = function () {
             hint: "Input color of dark areas in hex format: 0xRRGGBB",
             scope: "world",
             type: String,
-            default: "0x403080",
+            default: "0x242448",
             config: true,
             onChange: s => { canvas.draw(); }
         });
