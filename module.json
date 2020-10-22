@@ -4,7 +4,7 @@
   "description": "This module allows adjustments to the appearance of the FOW.",
   "version": "0.6.6",
   "minimumCoreVersion": "0.6.1",
-  "compatibleCoreVersion": "0.7.4",
+  "compatibleCoreVersion": "0.7.5",
   "author": "trdischat",
   "scripts": [],
   "esmodules": ["lessfog.js"],
