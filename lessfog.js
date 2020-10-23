@@ -68,26 +68,26 @@ Hooks.once('ready', function () {
             `const bf = new PIXI.filters.BlurFilter(32);`);
         if (!newClass) return;
         LightingLayer.prototype._drawLightingContainer = newClass.prototype._drawLightingContainer;
-    } else {
-        // Adjust the FOW transparency for the GM.
-        newClass = SightLayer;
-        newClass = patchMethod(newClass, "_drawFogContainer", 7,
-            `fog.unexplored.beginFill(CONFIG.Canvas.unexploredColor, 1.0).drawShape(r).endFill();`,
-            `let dRGB = hexToRGB(CONFIG.Canvas.darknessColor);
-            let uRGB = hexToRGB(game.user.isGM ? CONFIG.Canvas.unexploredColor : 0x000000);
-            let uColor = rgbToHex(dRGB.map((c, i) => uRGB[i] / ((1-canvas.scene.data.darkness) + (canvas.scene.data.darkness*c))));
-            fog.unexplored.beginFill(uColor, 1.0).drawShape(r).endFill();`);
-        if (!newClass) return;
-        SightLayer.prototype._drawFogContainer = newClass.prototype._drawFogContainer;
-        // Compensate for darkness setting in explored areas.
-        newClass = SightLayer;
-        newClass = patchMethod(newClass, "refresh", 10,
-            `prior.fov.tint = CONFIG.Canvas.exploredColor;`,
-            `let dRGB = hexToRGB(CONFIG.Canvas.darknessColor);
-            let eRGB = hexToRGB(CONFIG.Canvas.exploredColor);
-            prior.fov.tint = rgbToHex(dRGB.map((c, i) => eRGB[i] / ((1-canvas.scene.data.darkness) + (canvas.scene.data.darkness*c))));`);
-        if (!newClass) return;
-        SightLayer.prototype.refresh = newClass.prototype.refresh;
+    // } else {
+    //     // Adjust the FOW transparency for the GM.
+    //     newClass = SightLayer;
+    //     newClass = patchMethod(newClass, "_drawFogContainer", 7,
+    //         `fog.unexplored.beginFill(CONFIG.Canvas.unexploredColor, 1.0).drawShape(r).endFill();`,
+    //         `let dRGB = hexToRGB(CONFIG.Canvas.darknessColor);
+    //         let uRGB = hexToRGB(game.user.isGM ? CONFIG.Canvas.unexploredColor : 0x000000);
+    //         let uColor = rgbToHex(dRGB.map((c, i) => uRGB[i] / ((1-canvas.scene.data.darkness) + (canvas.scene.data.darkness*c))));
+    //         fog.unexplored.beginFill(uColor, 1.0).drawShape(r).endFill();`);
+    //     if (!newClass) return;
+    //     SightLayer.prototype._drawFogContainer = newClass.prototype._drawFogContainer;
+    //     // Compensate for darkness setting in explored areas.
+    //     newClass = SightLayer;
+    //     newClass = patchMethod(newClass, "refresh", 10,
+    //         `prior.fov.tint = CONFIG.Canvas.exploredColor;`,
+    //         `let dRGB = hexToRGB(CONFIG.Canvas.darknessColor);
+    //         let eRGB = hexToRGB(CONFIG.Canvas.exploredColor);
+    //         prior.fov.tint = rgbToHex(dRGB.map((c, i) => eRGB[i] / ((1-canvas.scene.data.darkness) + (canvas.scene.data.darkness*c))));`);
+    //     if (!newClass) return;
+    //     SightLayer.prototype.refresh = newClass.prototype.refresh;
     }
 
 });

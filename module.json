@@ -2,7 +2,7 @@
   "name": "lessfog",
   "title": "Less Fog",
   "description": "This module allows adjustments to the appearance of the FOW.",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "minimumCoreVersion": "0.6.1",
   "compatibleCoreVersion": "0.7.5",
   "author": "trdischat",
