@@ -36,7 +36,7 @@ Hooks.once('init', async function () {
         CONFIG.Canvas.blurStrength = 16;
         CONFIG.Canvas.darknessColor = game.settings.get("lessfog", "color_dark") ? game.settings.get("lessfog", "color_dark") : 0x242448;
         CONFIG.Canvas.exploredColor = game.settings.get("lessfog", "color_explored") ? game.settings.get("lessfog", "color_explored") : 0x7f7f7f;
-        CONFIG.Canvas.unexploredColor = game.settings.get("lessfog", "color_unexplored") ? game.settings.get("lessfog", "color_unexplored") : 0x000000;
+        // CONFIG.Canvas.unexploredColor = game.settings.get("lessfog", "color_unexplored") ? game.settings.get("lessfog", "color_unexplored") : 0x000000;
         CONFIG.Canvas.lightLevels.dim = game.settings.get("lessfog", "level_dim");
     }
 });
