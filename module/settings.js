@@ -1,6 +1,8 @@
+import { setUnexploredForGM } from '../lessfog.js';
+
 export const registerSettings = function () {
     /**
-     * Configuration for dim, dark, explored, and unexplored settings.
+     * Configuration for dim, explored, and unexplored settings.
      */
     if (isNewerVersion('0.7.3', game.data.version)) {
         game.settings.register("lessfog", "alpha_unexplored", {
@@ -52,35 +54,42 @@ export const registerSettings = function () {
             },
             default: 0.5,
             config: true,
-            onChange: s => { canvas.draw(); }
+            onChange: value => {
+                CONFIG.Canvas.lightLevels.dim = value;
+            }
         });
-        game.settings.register("lessfog", "color_dark", {
-            name: "Color - Darkness",
-            hint: "Input color of dark areas in hex format: 0xRRGGBB",
+        game.settings.register("lessfog", "explored_darkness", {
+            name: "Darkness - Explored",
+            hint: "Darkness level of Explored fog for all. 0 to 1 where 0 is Pitch Black",
             scope: "world",
-            type: String,
-            default: "0x242448",
+            type: Number,
+            range: {
+                min: 0,
+                max: 1,
+                step: 0.05
+            },
+            default: 0.25,
             config: true,
-            onChange: s => { canvas.draw(); }
+            onChange: value => {
+                CONFIG.Canvas.exploredColor = PIXI.utils.rgb2hex([value, value, value]);
+            }
         });
-        game.settings.register("lessfog", "color_explored", {
-            name: "Color - Explored",
-            hint: "Input color of explored areas in hex format: 0xRRGGBB",
+        game.settings.register("lessfog", "unexplored_darkness", {
+            name: "Darkness - Unexplored (GM only)",
+            hint: "Darkness level of the Unexplored fog for GMs. 0 to 1 where 0 is Pitch Black",
             scope: "world",
-            type: String,
-            default: "0x7f7f7f",
+            type: Number,
+            range: {
+                min: 0,
+                max: 1,
+                step: 0.05
+            },
+            default: 0.15,
             config: true,
-            onChange: s => { canvas.draw(); }
+            onChange: value => {
+                setUnexploredForGM(value);
+            }
         });
-        // game.settings.register("lessfog", "color_unexplored", {
-        //     name: "Color - Unexplored (GM only)",
-        //     hint: "Input color of unexplored areas in hex format: 0xRRGGBB",
-        //     scope: "world",
-        //     type: String,
-        //     default: "0x202020",
-        //     config: true,
-        //     onChange: s => { canvas.draw(); }
-        // });
     }
     /**
      * Option to reveal tokens to the GM.
