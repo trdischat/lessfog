@@ -72,15 +72,15 @@ export const registerSettings = function () {
             config: true,
             onChange: s => { canvas.draw(); }
         });
-        game.settings.register("lessfog", "color_unexplored", {
-            name: "Color - Unexplored (GM only)",
-            hint: "Input color of unexplored areas in hex format: 0xRRGGBB",
-            scope: "world",
-            type: String,
-            default: "0x202020",
-            config: true,
-            onChange: s => { canvas.draw(); }
-        });
+        // game.settings.register("lessfog", "color_unexplored", {
+        //     name: "Color - Unexplored (GM only)",
+        //     hint: "Input color of unexplored areas in hex format: 0xRRGGBB",
+        //     scope: "world",
+        //     type: String,
+        //     default: "0x202020",
+        //     config: true,
+        //     onChange: s => { canvas.draw(); }
+        // });
     }
     /**
      * Option to reveal tokens to the GM.
