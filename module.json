@@ -6,11 +6,8 @@
   "minimumCoreVersion": "0.6.1",
   "compatibleCoreVersion": "0.6.6",
   "author": "trdischat",
-  "scripts": [],
   "esmodules": ["lessfog.js"],
-  "styles": [],
-  "packs": [],
   "url": "https://github.com/trdischat/lessfog",
-  "manifest": "https://raw.githubusercontent.com/trdischat/lessfog/master/module.json",
-  "download": "https://github.com/trdischat/lessfog/archive/master.zip"
+  "manifest": "https://github.com/trdischat/lessfog/releases/download/0.6.9/module.json",
+  "download": "https://github.com/trdischat/lessfog/releases/download/0.6.9/module.zip"
 }
