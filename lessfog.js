@@ -28,10 +28,6 @@ Hooks.once('init', async function () {
     // Register custom module settings
     registerSettings();
 
-    /**
-     * Adjust the dim light level and the explored darkness color
-     */
-
     // set the dim light level
     CONFIG.Canvas.lightLevels.dim = 1 - game.settings.get("lessfog", "dim_darkness");
 
