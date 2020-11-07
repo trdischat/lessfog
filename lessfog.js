@@ -10,12 +10,12 @@ import { patchMethod } from './module/patchlib.js';
  */
 export function setUnexploredForGM(unexploredDarkness) {
     if (game.user.isGM) {
-        // canvas.sight.refresh() should be applying the new color but isn't - https://gitlab.com/foundrynet/foundryvtt/-/issues/3955
-        // CONFIG.Canvas.unexploredColor = PIXI.utils.rgb2hex([1-unexploredDarkness, 1-unexploredDarkness, 1-unexploredDarkness]);
-        // canvas.sight.refresh();
-
-        // instead we set the alpha of the `unexplored` container
-        canvas.sight.fog.unexplored.alpha = unexploredDarkness;
+        if (isNewerVersion('0.7.6', game.data.version)) {
+            canvas.sight.fog.unexplored.alpha = unexploredDarkness;
+        } else {
+            CONFIG.Canvas.unexploredColor = PIXI.utils.rgb2hex([1-unexploredDarkness, 1-unexploredDarkness, 1-unexploredDarkness]);
+            canvas.sight.refresh();
+        }
     }
 }
 
