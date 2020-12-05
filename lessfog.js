@@ -34,13 +34,6 @@ Hooks.once('init', async function () {
     // set the explored color based on selected darkness level
     const exploredDarkness = 1 - game.settings.get("lessfog", "explored_darkness");
     CONFIG.Canvas.exploredColor = PIXI.utils.rgb2hex([exploredDarkness, exploredDarkness, exploredDarkness]);
-});
-
-/* ------------------------------------ */
-/* When ready							*/
-/* ------------------------------------ */
-Hooks.once('ready', function () {
-
     /**
      * Patch `restrictVisibility` to allow the GM to see all tokens.
      */
