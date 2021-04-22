@@ -3,10 +3,7 @@ import { registerSettings } from './module/settings.js';
 import { patchMethod } from './module/patchlib.js';
 
 /**
- * Set unexplored fog alpha for GMs only.
  * Set unexplored fog alpha for GMs only (unless configured).
- * Setting the color should be sufficient but is bugged.
- * Issue: https://gitlab.com/foundrynet/foundryvtt/-/issues/3955
  * @param {number} unexploredDarkness - number between 0 and 1
  */
 export function setUnexploredForPermitted(unexploredDarkness) {
