@@ -1,4 +1,4 @@
-import { setUnexploredForGM } from '../lessfog.js';
+import { setUnexploredForPermitted } from '../lessfog.js';
 
 export const registerSettings = function () {
     /**
@@ -37,8 +37,8 @@ export const registerSettings = function () {
         }
     });
     game.settings.register("lessfog", "unexplored_darkness", {
-        name: "Darkness - Unexplored (GM only)",
-        hint: "Darkness level of the Unexplored fog for GMs (0 to 1 where 1 is pitch black).",
+        name: "Darkness - Unexplored",
+        hint: "Darkness level of the Unexplored fog. By default only for GMs (0 to 1 where 1 is pitch black).",
         scope: "world",
         type: Number,
         range: {
@@ -49,7 +49,7 @@ export const registerSettings = function () {
         default: 0.85,
         config: true,
         onChange: value => {
-            setUnexploredForGM(value);
+            setUnexploredForPermitted(value);
         }
     });
     /**
@@ -61,6 +61,18 @@ export const registerSettings = function () {
         scope: "world",
         type: Boolean,
         default: true,
+        config: true,
+        onChange: s => { canvas.draw(); }
+    });
+    /**
+     * Option to affect all players
+     */
+    game.settings.register("lessfog", "affect_all", {
+        name: "Affect All Players",
+        hint: "Give all players view of the board behind FOW. Useful if you just want to know about line of sight",
+        scope: "world",
+        type: Boolean,
+        default: false,
         config: true,
         onChange: s => { canvas.draw(); }
     });

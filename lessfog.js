@@ -3,19 +3,19 @@ import { registerSettings } from './module/settings.js';
 import { patchMethod } from './module/patchlib.js';
 
 /**
- * Set unexplored fog alpha for GMs only.
+ * Set unexplored fog alpha for GMs only (unless configured).
  * Setting the color should be sufficient but is bugged.
  * Issue: https://gitlab.com/foundrynet/foundryvtt/-/issues/3955
  * @param {number} unexploredDarkness - number between 0 and 1
  */
-export function setUnexploredForGM(unexploredDarkness) {
-    if (game.user.isGM) {
-        // canvas.sight.refresh() should be applying the new color but isn't - https://gitlab.com/foundrynet/foundryvtt/-/issues/3955
-        // CONFIG.Canvas.unexploredColor = PIXI.utils.rgb2hex([1-unexploredDarkness, 1-unexploredDarkness, 1-unexploredDarkness]);
-        // canvas.sight.refresh();
-
-        // instead we set the alpha of the `unexplored` container
-        canvas.sight.fog.unexplored.alpha = unexploredDarkness;
+export function setUnexploredForPermitted(unexploredDarkness) {
+    if (game.user.isGM || game.settings.get("lessfog", "affect_all")) {
+        if (isNewerVersion('0.7.6', game.data.version)) {
+            canvas.sight.fog.unexplored.alpha = unexploredDarkness;
+        } else {
+            CONFIG.Canvas.unexploredColor = PIXI.utils.rgb2hex([1-unexploredDarkness, 1-unexploredDarkness, 1-unexploredDarkness]);
+            canvas.sight.refresh();
+        }
     }
 }
 
@@ -34,20 +34,17 @@ Hooks.once('init', async function () {
     // set the explored color based on selected darkness level
     const exploredDarkness = 1 - game.settings.get("lessfog", "explored_darkness");
     CONFIG.Canvas.exploredColor = PIXI.utils.rgb2hex([exploredDarkness, exploredDarkness, exploredDarkness]);
-});
-
-/* ------------------------------------ */
-/* When ready							*/
-/* ------------------------------------ */
-Hooks.once('ready', function () {
-
     /**
      * Patch `restrictVisibility` to allow the GM to see all tokens.
      */
     let newClass = SightLayer;
+
+    // Set it to affect all players if the setting is enabled
+    let affected = (game.settings.get("lessfog", "affect_all")) ? "game.users.entities" : "game.user.isGM";
+
     newClass = patchMethod(newClass, "restrictVisibility", 4,
         `t.visible = ( !this.tokenVision && !t.data.hidden ) || t.isVisible;`,
-        `t.visible = ( !this.tokenVision && !t.data.hidden ) || ( game.settings.get("lessfog", "reveal_tokens") && game.user.isGM ) || t.isVisible;`);
+        `t.visible = ( !this.tokenVision && !t.data.hidden ) || ( game.settings.get("lessfog", "reveal_tokens") && ${affected}) || t.isVisible;`);
     if (!newClass) return;
     SightLayer.prototype.restrictVisibility = newClass.prototype.restrictVisibility;
 
@@ -58,5 +55,5 @@ Hooks.once('ready', function () {
 /* ------------------------------------ */
 Hooks.once('canvasReady', function () {
     const unexploredDarkness = game.settings.get("lessfog", "unexplored_darkness");
-    setUnexploredForGM(unexploredDarkness);
+    setUnexploredForPermitted(unexploredDarkness);
 })
