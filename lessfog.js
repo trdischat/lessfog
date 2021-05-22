@@ -1,6 +1,10 @@
 // Import JavaScript modules
 import { registerSettings } from './module/settings.js';
 import { patchMethod } from './module/patchlib.js';
+import { replaceGetter } from './module/patchlib.js';
+import { callOriginalGetter } from './module/patchlib.js';
+
+CONFIG.LESSFOG = {NOFURNACE: true};
 
 /**
  * Set unexplored fog alpha for GMs only (unless configured).
@@ -49,9 +53,50 @@ Hooks.once('init', async function () {
 });
 
 /* ------------------------------------ */
+/* Setup module							*/
+/* ------------------------------------ */
+Hooks.once('setup', function () {
+    // Determine whether legacy Furnace module is active
+    if (game.modules.get("furnace")?.active) {
+        if (isNewerVersion('2.6.1', game.modules.get("furnace").data.version.match(/[\d.]/g).join(''))) {
+            CONFIG.LESSFOG.NOFURNACE = false;
+        } 
+    }
+
+    // Disable sight layer's token vision if GM and option enabled
+    if (CONFIG.LESSFOG.NOFURNACE) {
+        replaceGetter(SightLayer, 'tokenVision', function () {
+            if (game.user.isGM && game.settings.get("lessfog", "showAllToGM")) return false;
+            return callOriginalGetter(this, "tokenVision");
+        });
+    }
+});
+
+/* ------------------------------------ */
 /* When Canvas is ready					*/
 /* ------------------------------------ */
 Hooks.once('canvasReady', function () {
     const unexploredDarkness = game.settings.get("lessfog", "unexplored_darkness");
     setUnexploredForPermitted(unexploredDarkness);
 })
+
+/* ------------------------------------ */
+/* Additional Hooks                     */
+/* ------------------------------------ */
+
+Hooks.on('getSceneControlButtons', controls => {
+    if (CONFIG.LESSFOG.NOFURNACE) {
+        let tokenButton = controls.find(b => b.name == "token")
+        if (tokenButton) {
+            tokenButton.tools.push({
+                name: "vision",
+                title: "Toggle GM Vision",
+                icon: "far fa-eye-slash",
+                toggle: true,
+                active: game.settings.get("lessfog", "showAllToGM"),
+                visible: game.user.isGM,
+                onClick: (value) => game.settings.set("lessfog", "showAllToGM", value)
+            });
+        }
+    }
+});

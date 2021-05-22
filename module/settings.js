@@ -57,7 +57,7 @@ export const registerSettings = function () {
      */
     game.settings.register("lessfog", "reveal_tokens", {
         name: "Reveal Tokens",
-        hint: "Reveal all tokens on the canvas to the GM at all times",
+        hint: "Reveal all tokens on the canvas to the GM at all times.",
         scope: "world",
         type: Boolean,
         default: true,
@@ -68,12 +68,25 @@ export const registerSettings = function () {
      * Option to affect all players
      */
     game.settings.register("lessfog", "affect_all", {
-        name: "Affect All Players",
-        hint: "Give all players view of the board behind FOW. Useful if you just want to know about line of sight",
+        name: "Reveal to All Players",
+        hint: "Reveal Unexplored areas and tokens to all players (useful if you just want to know about line of sight).",
         scope: "world",
         type: Boolean,
         default: false,
         config: true,
         onChange: s => { canvas.draw(); }
+    });
+    /**
+     * Hidden option used by GM vision button
+     */
+    game.settings.register("lessfog", "showAllToGM", {
+        name: "Show All to GM",
+        scope: "world",
+        config: false,
+        default: false,
+        type: Boolean,
+        onChange: value => {
+            canvas.initializeSources();
+        }
     });
 }
