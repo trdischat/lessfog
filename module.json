@@ -2,12 +2,12 @@
   "name": "lessfog",
   "title": "Less Fog",
   "description": "This module allows adjustments to the appearance of the FOW.",
-  "version": "0.7.5",
+  "version": "0.8.1",
   "minimumCoreVersion": "0.7.3",
   "compatibleCoreVersion": "0.8.5",
   "author": "trdischat",
   "esmodules": ["lessfog.js"],
   "url": "https://github.com/trdischat/lessfog",
   "manifest": "https://github.com/trdischat/lessfog/releases/latest/download/module.json",
-  "download": "https://github.com/trdischat/lessfog/releases/download/0.7.5/module.zip"
+  "download": "https://github.com/trdischat/lessfog/releases/download/0.8.1/module.zip"
 }
