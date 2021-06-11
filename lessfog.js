@@ -1,8 +1,6 @@
 // Import JavaScript modules
 import { registerSettings } from './module/settings.js';
-import { patchMethod } from './module/patchlib.js';
-import { replaceGetter } from './module/patchlib.js';
-import { callOriginalGetter } from './module/patchlib.js';
+import { libWrapper } from "./module/shim.js";
 
 CONFIG.LESSFOG = {NOFURNACE: true};
 
@@ -52,10 +50,9 @@ Hooks.once('setup', function () {
 
     // Disable sight layer's token vision if GM and option enabled
     if (CONFIG.LESSFOG.NOFURNACE) {
-        replaceGetter(SightLayer, 'tokenVision', function () {
-            if (game.user.isGM && game.settings.get("lessfog", "showAllToGM")) return false;
-            return callOriginalGetter(this, "tokenVision");
-        });
+        libWrapper.register('lessfog', 'SightLayer.prototype.tokenVision', function (wrapped, ...args) {
+            return (game.user.isGM && game.settings.get("lessfog", "showAllToGM")) ? false : wrapped(...args);
+        }, 'MIXED' );
     }
 });
 
@@ -88,6 +85,7 @@ Hooks.on('getSceneControlButtons', controls => {
     }
 });
 
+// Keep GM's visibility of unexplored areas relatively constant when darkness levels change.
 Hooks.on("lightingRefresh", () => {
     setUnexploredForPermitted(game.settings.get("lessfog", "unexplored_darkness") * (1 - canvas.lighting.darknessLevel));
 });
