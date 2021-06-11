@@ -36,19 +36,6 @@ Hooks.once('init', async function () {
     // set the explored color based on selected darkness level
     const exploredDarkness = 1 - game.settings.get("lessfog", "explored_darkness");
     CONFIG.Canvas.exploredColor = PIXI.utils.rgb2hex([exploredDarkness, exploredDarkness, exploredDarkness]);
-    /**
-     * Patch `restrictVisibility` to allow the GM to see all tokens.
-     */
-    let newClass = SightLayer;
-
-    // Set it to affect all players if the setting is enabled
-    let affected = (game.settings.get("lessfog", "affect_all")) ? "game.users.entities" : "game.user.isGM";
-
-    newClass = patchMethod(newClass, "restrictVisibility", 4,
-        `t.visible = ( !this.tokenVision && !t.data.hidden ) || t.isVisible;`,
-        `t.visible = ( !this.tokenVision && !t.data.hidden ) || ( game.settings.get("lessfog", "reveal_tokens") && ${affected}) || t.isVisible;`);
-    if (!newClass) return;
-    SightLayer.prototype.restrictVisibility = newClass.prototype.restrictVisibility;
 
 });
 
@@ -103,4 +90,12 @@ Hooks.on('getSceneControlButtons', controls => {
 
 Hooks.on("lightingRefresh", () => {
     setUnexploredForPermitted(game.settings.get("lessfog", "unexplored_darkness") * (1 - canvas.lighting.darknessLevel));
+});
+
+// Allow the GM to see all tokens.
+Hooks.on("sightRefresh", layer => {
+    let affected = (game.settings.get("lessfog", "affect_all")) ? "game.users.entities" : "game.user.isGM";
+    for ( let t of canvas.tokens.placeables ) {
+        t.visible = ( !layer.tokenVision && !t.data.hidden ) || ( game.settings.get("lessfog", "reveal_tokens") && affected ) || t.isVisible;
+    }
 });
