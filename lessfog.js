@@ -100,3 +100,7 @@ Hooks.on('getSceneControlButtons', controls => {
         }
     }
 });
+
+Hooks.on("lightingRefresh", () => {
+    setUnexploredForPermitted(game.settings.get("lessfog", "unexplored_darkness") * (1 - canvas.lighting.darknessLevel));
+});
