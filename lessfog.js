@@ -28,12 +28,12 @@ Hooks.once('init', async function () {
     // Register custom module settings
     registerSettings();
 
-    // set the dim light level
+    // set lighting levels to configured values
     CONFIG.Canvas.lightLevels.dim = 1 - game.settings.get("lessfog", "dim_darkness");
-
-    // set the explored color based on selected darkness level
     const exploredDarkness = 1 - game.settings.get("lessfog", "explored_darkness");
     CONFIG.Canvas.exploredColor = PIXI.utils.rgb2hex([exploredDarkness, exploredDarkness, exploredDarkness]);
+    CONFIG.Canvas.daylightColor = parseInt(game.settings.get("lessfog", "daylight_color").substring(1,7),16)
+    CONFIG.Canvas.darknessColor = parseInt(game.settings.get("lessfog", "darkness_color").substring(1,7),16)
 
 });
 
@@ -87,13 +87,12 @@ Hooks.on('getSceneControlButtons', controls => {
 
 // Keep GM's visibility of unexplored areas relatively constant when darkness levels change.
 Hooks.on("lightingRefresh", () => {
-    setUnexploredForPermitted(game.settings.get("lessfog", "unexplored_darkness") * (1 - canvas.lighting.darknessLevel));
+    setUnexploredForPermitted(game.settings.get("lessfog", "unexplored_darkness") * (1 - (canvas.lighting.darknessLevel / 4)));
 });
 
 // Allow the GM to see all tokens.
 Hooks.on("sightRefresh", layer => {
-    let affected = (game.settings.get("lessfog", "affect_all")) ? "game.users.entities" : "game.user.isGM";
     for ( let t of canvas.tokens.placeables ) {
-        t.visible = ( !layer.tokenVision && !t.data.hidden ) || ( game.settings.get("lessfog", "reveal_tokens") && affected ) || t.isVisible;
+        t.visible = ( !layer.tokenVision && !t.data.hidden ) || ( game.settings.get("lessfog", "reveal_tokens") && (game.user.isGM || game.settings.get("lessfog", "affect_all")) ) || t.isVisible;
     }
 });

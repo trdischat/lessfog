@@ -2,6 +2,31 @@ import { setUnexploredForPermitted } from '../lessfog.js';
 
 export const registerSettings = function () {
     /**
+     * Configuration for global daylight and darkness colors.
+     */
+     new window.Ardittristan.ColorSetting("lessfog", "daylight_color", {
+        name: "Global Daylight Color",
+        hint: "Less Fog default is #EEEEEEFF",
+        label: "Daylight Color",
+        restricted: true,
+        defaultColor: "#eeeeeeff",
+        scope: "world",
+        onChange: (value) => {
+            CONFIG.Canvas.daylightColor = parseInt(value.substring(1,7), 16);
+        }
+    })
+    new window.Ardittristan.ColorSetting("lessfog", "darkness_color", {
+        name: "Global Darkness Color",
+        hint: "Less Fog default is #484864FF",
+        label: "Darkness Color",
+        restricted: true,
+        defaultColor: "#484864ff",
+        scope: "world",
+        onChange: (value) => {
+            CONFIG.Canvas.darknessColor = parseInt(value.substring(1,7), 16);
+        }
+    })
+    /**
      * Configuration for dim, explored, and unexplored settings.
      */
     game.settings.register("lessfog", "dim_darkness", {
@@ -14,7 +39,7 @@ export const registerSettings = function () {
             max: 1,
             step: 0.05
         },
-        default: 0.5,
+        default: 1.0,
         config: true,
         onChange: value => {
             CONFIG.Canvas.lightLevels.dim = 1 - value;
@@ -22,7 +47,7 @@ export const registerSettings = function () {
     });
     game.settings.register("lessfog", "explored_darkness", {
         name: "Darkness - Explored",
-        hint: "Darkness level of Explored fog for all (0 to 1 where 1 is pitch black). MUST RESET FOW TO SEE CHANGE!",
+        hint: "Darkness level of Explored fog (0 to 1 where 1 is pitch black). MUST RESET FOW TO SEE CHANGE!",
         scope: "world",
         type: Number,
         range: {
@@ -30,7 +55,7 @@ export const registerSettings = function () {
             max: 1,
             step: 0.05
         },
-        default: 0.7,
+        default: 0.4,
         config: true,
         onChange: value => {
             CONFIG.Canvas.exploredColor = PIXI.utils.rgb2hex([1 - value, 1 - value, 1 - value]);
@@ -38,7 +63,7 @@ export const registerSettings = function () {
     });
     game.settings.register("lessfog", "unexplored_darkness", {
         name: "Darkness - Unexplored",
-        hint: "Darkness level of the Unexplored fog. By default only for GMs (0 to 1 where 1 is pitch black).",
+        hint: "Darkness level of Unexplored fog. By default only for GMs (0 to 1 where 1 is pitch black).",
         scope: "world",
         type: Number,
         range: {
@@ -46,7 +71,7 @@ export const registerSettings = function () {
             max: 1,
             step: 0.05
         },
-        default: 0.85,
+        default: 0.8,
         config: true,
         onChange: value => {
             setUnexploredForPermitted(value);
@@ -62,7 +87,7 @@ export const registerSettings = function () {
         type: Boolean,
         default: true,
         config: true,
-        onChange: s => { canvas.draw(); }
+        onChange: s => { canvas.perception.initialize(); }
     });
     /**
      * Option to affect all players
@@ -74,7 +99,7 @@ export const registerSettings = function () {
         type: Boolean,
         default: false,
         config: true,
-        onChange: s => { canvas.draw(); }
+        onChange: s => { canvas.perception.initialize(); }
     });
     /**
      * Hidden option used by GM vision button
@@ -85,8 +110,6 @@ export const registerSettings = function () {
         config: false,
         default: false,
         type: Boolean,
-        onChange: value => {
-            canvas.initializeSources();
-        }
+        onChange: value => { canvas.perception.initialize(); }
     });
 }
