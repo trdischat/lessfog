@@ -92,7 +92,9 @@ Hooks.on("lightingRefresh", () => {
 
 // Allow the GM to see all tokens.
 Hooks.on("sightRefresh", layer => {
-    for ( let t of canvas.tokens.placeables ) {
-        t.visible = ( !layer.tokenVision && !t.data.hidden ) || ( game.settings.get("lessfog", "reveal_tokens") && (game.user.isGM || game.settings.get("lessfog", "affect_all")) ) || t.isVisible;
+    if(!game.modules.get("levels")?.active) {
+        for ( let t of canvas.tokens.placeables ) {
+            t.visible = ( !layer.tokenVision && !t.data.hidden ) || ( game.settings.get("lessfog", "reveal_tokens") && (game.user.isGM || game.settings.get("lessfog", "affect_all")) ) || t.isVisible;
+        }
     }
 });

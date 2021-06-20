@@ -28,7 +28,7 @@ The first four lighting settings affect all users, both GM and Players. By defau
 
 ## Reveal Tokens
 
-By default, Foundry hides all tokens that are outside a selected token's field of view. This is true for both Players and the GM. So when the GM selects a token on the map, only the tokens that can be seen by the selected token are displayed.  To make things easier on the GM, Less Fog has an option to reveal *to the GM only* all tokens on the map.
+By default, Foundry hides all tokens that are outside a selected token's field of view. This is true for both Players and the GM. So when the GM selects a token on the map, only the tokens that can be seen by the selected token are displayed. To make things easier on the GM, Less Fog has an option to reveal *to the GM only* all tokens on the map. If the [Levels module](https://github.com/theripper93/Levels) is enabled, this option will be suppressed so that it does not conflict with the special level effects in that module.
 
 ## Player Vision
 

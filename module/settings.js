@@ -82,7 +82,7 @@ export const registerSettings = function () {
      */
     game.settings.register("lessfog", "reveal_tokens", {
         name: "Reveal Tokens",
-        hint: "Reveal all tokens on the canvas to the GM at all times.",
+        hint: "Reveal all tokens on the canvas to the GM at all times (unless the Levels module is enabled).",
         scope: "world",
         type: Boolean,
         default: true,
