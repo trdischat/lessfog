@@ -4,7 +4,7 @@ export const registerSettings = function () {
     /**
      * Configuration for global daylight and darkness colors.
      */
-     new window.Ardittristan.ColorSetting("lessfog", "daylight_color", {
+    new window.Ardittristan.ColorSetting("lessfog", "daylight_color", {
         name: "Global Daylight Color",
         hint: "Less Fog default is #EEEEEEFF",
         label: "Daylight Color",
@@ -12,7 +12,7 @@ export const registerSettings = function () {
         defaultColor: "#eeeeeeff",
         scope: "world",
         onChange: (value) => {
-            CONFIG.Canvas.daylightColor = parseInt(value.substring(1,7), 16);
+            CONFIG.Canvas.daylightColor = parseInt(value.substring(1, 7), 16);
         }
     })
     new window.Ardittristan.ColorSetting("lessfog", "darkness_color", {
@@ -23,7 +23,7 @@ export const registerSettings = function () {
         defaultColor: "#484864ff",
         scope: "world",
         onChange: (value) => {
-            CONFIG.Canvas.darknessColor = parseInt(value.substring(1,7), 16);
+            CONFIG.Canvas.darknessColor = parseInt(value.substring(1, 7), 16);
         }
     })
     /**

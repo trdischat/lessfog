@@ -2,7 +2,7 @@
 import { registerSettings } from './module/settings.js';
 import { libWrapper } from "./module/shim.js";
 
-CONFIG.LESSFOG = {NOFURNACE: true};
+CONFIG.LESSFOG = { NOFURNACE: true };
 
 /**
  * Set unexplored fog alpha for GMs only (unless configured).
@@ -13,7 +13,7 @@ export function setUnexploredForPermitted(unexploredDarkness) {
         if (isNewerVersion('0.7.6', game.data.version)) {
             canvas.sight.fog.unexplored.alpha = unexploredDarkness;
         } else {
-            CONFIG.Canvas.unexploredColor = PIXI.utils.rgb2hex([1-unexploredDarkness, 1-unexploredDarkness, 1-unexploredDarkness]);
+            CONFIG.Canvas.unexploredColor = PIXI.utils.rgb2hex([1 - unexploredDarkness, 1 - unexploredDarkness, 1 - unexploredDarkness]);
             canvas.sight.refresh();
         }
     }
@@ -32,8 +32,8 @@ Hooks.once('init', async function () {
     CONFIG.Canvas.lightLevels.dim = 1 - game.settings.get("lessfog", "dim_darkness");
     const exploredDarkness = 1 - game.settings.get("lessfog", "explored_darkness");
     CONFIG.Canvas.exploredColor = PIXI.utils.rgb2hex([exploredDarkness, exploredDarkness, exploredDarkness]);
-    CONFIG.Canvas.daylightColor = parseInt(game.settings.get("lessfog", "daylight_color").substring(1,7),16)
-    CONFIG.Canvas.darknessColor = parseInt(game.settings.get("lessfog", "darkness_color").substring(1,7),16)
+    CONFIG.Canvas.daylightColor = parseInt(game.settings.get("lessfog", "daylight_color").substring(1, 7), 16)
+    CONFIG.Canvas.darknessColor = parseInt(game.settings.get("lessfog", "darkness_color").substring(1, 7), 16)
 
 });
 
@@ -45,14 +45,14 @@ Hooks.once('setup', function () {
     if (game.modules.get("furnace")?.active) {
         if (isNewerVersion('2.6.1', game.modules.get("furnace").data.version.match(/[\d.]/g).join(''))) {
             CONFIG.LESSFOG.NOFURNACE = false;
-        } 
+        }
     }
 
     // Disable sight layer's token vision if GM and option enabled
     if (CONFIG.LESSFOG.NOFURNACE) {
         libWrapper.register('lessfog', 'SightLayer.prototype.tokenVision', function (wrapped, ...args) {
             return (game.user.isGM && game.settings.get("lessfog", "showAllToGM")) ? false : wrapped(...args);
-        }, 'MIXED' );
+        }, 'MIXED');
     }
 });
 
@@ -92,9 +92,9 @@ Hooks.on("lightingRefresh", () => {
 
 // Allow the GM to see all tokens.
 Hooks.on("sightRefresh", layer => {
-    if(!game.modules.get("levels")?.active) {
-        for ( let t of canvas.tokens.placeables ) {
-            t.visible = ( !layer.tokenVision && !t.data.hidden ) || ( game.settings.get("lessfog", "reveal_tokens") && (game.user.isGM || game.settings.get("lessfog", "affect_all")) ) || t.isVisible;
+    if (!game.modules.get("levels")?.active) {
+        for (let t of canvas.tokens.placeables) {
+            t.visible = (!layer.tokenVision && !t.data.hidden) || (game.settings.get("lessfog", "reveal_tokens") && (game.user.isGM || game.settings.get("lessfog", "affect_all"))) || t.isVisible;
         }
     }
 });
