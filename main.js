@@ -101,5 +101,7 @@ Hooks.on("sightRefresh", layer => {
         for (let t of canvas.tokens.placeables) {
             t.visible = (!layer.tokenVision && !t.data.hidden) || (game.settings.get("lessfog", "reveal_tokens") && (game.user.isGM || game.settings.get("lessfog", "affect_all"))) || t.isVisible;
         }
+    } else {
+        debug.log(false, 'Levels module enabled; overrides option to Reveal Tokens to GM');
     }
 });
