@@ -38,13 +38,13 @@ In response to requests from folks playing games like Lancer, there is now an op
 
 *For the GM only*, the module also adds a button to the Token controls on the left side of the screen that will toggle the entire FOW on and off. This button replicates a similar function that appeared in older versions (before 2.6.1) of the [Furnace module](https://github.com/League-of-Foundry-Developers/fvtt-module-furnace).
 
-![New Button](newbutton.jpg)
+![New Button](images/newbutton.jpg)
 
 ## Illustrating the Effect of Less Fog and Perfect Vision
 
 Less Fog works well in combination with the [Perfect Vision module](https://github.com/dev7355608/perfect-vision). This example scene with a variety of lighting and vision conditions was used to illustrate the effect of Less Fog and Perfect Vision on GM and Player views in both Day and Night settings.
 
-![Guide](guide.jpg)
+![Guide](images/guide.jpg)
 
 Below is a side-by-side comparison of this example scene using (1) Foundry with no modules, (2) the Less Fog module, and (3) both the Less Fog and Perfect Vision modules. For the GM, Less Fog lightens the Unexplored areas and reveals all tokens on the map. For Players, Less Fog's default settings make Explored areas lighter and Dim areas darker. Adding Perfect Vision (with the dnd5e preset) renders dim vision in unlit areas in monochrome, and dim vision in dim light as bright light. While not illustrated here, Perfect Vision will use the the Daylight Color and Darkness Color set by Less Fog as its defaults, but can also override these colors for each scene if desired.
 
@@ -59,28 +59,28 @@ Below is a side-by-side comparison of this example scene using (1) Foundry with 
     <tr align="center">
         <td rowspan="2">0.0</td>
         <td>Player</td>
-        <td><img src="def_day.jpg"></td>
-        <td><img src="lf_pday.jpg"></td>
-        <td><img src="lfpv_pday.jpg"></td>
+        <td><img src="images/def_day.jpg"></td>
+        <td><img src="images/lf_pday.jpg"></td>
+        <td><img src="images/lfpv_pday.jpg"></td>
     </tr>
     <tr align="center">
         <td>GM</td>
-        <td><img src="def_day.jpg"></td>
-        <td><img src="lf_gday.jpg"></td>
-        <td><img src="lfpv_gday.jpg"></td>
+        <td><img src="images/def_day.jpg"></td>
+        <td><img src="images/lf_gday.jpg"></td>
+        <td><img src="images/lfpv_gday.jpg"></td>
     </tr>
     <tr align="center">
         <td rowspan="2">1.0</td>
         <td>Player</td>
-        <td><img src="def_nit.jpg"></td>
-        <td><img src="lf_pnit.jpg"></td>
-        <td><img src="lfpv_pnit.jpg"></td>
+        <td><img src="images/def_nit.jpg"></td>
+        <td><img src="images/lf_pnit.jpg"></td>
+        <td><img src="images/lfpv_pnit.jpg"></td>
     </tr>
     <tr align="center">
         <td>GM</td>
-        <td><img src="def_nit.jpg"></td>
-        <td><img src="lf_gnit.jpg"></td>
-        <td><img src="lfpv_gnit.jpg"></td>
+        <td><img src="images/def_nit.jpg"></td>
+        <td><img src="images/lf_gnit.jpg"></td>
+        <td><img src="images/lfpv_gnit.jpg"></td>
     </tr>
 </table>
 
