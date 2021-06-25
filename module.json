@@ -6,7 +6,7 @@
   "minimumCoreVersion": "0.7.4",
   "compatibleCoreVersion": "0.8.8",
   "author": "trdischat",
-  "esmodules": ["lessfog.js"],
+  "esmodules": ["main.js"],
   "dependencies": [
     { "name": "colorsettings", "type": "module" }
   ],

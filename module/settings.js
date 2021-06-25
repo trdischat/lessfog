@@ -1,4 +1,4 @@
-import { setUnexploredForPermitted } from '../lessfog.js';
+import { setUnexploredForPermitted } from '../main.js';
 
 export const registerSettings = function () {
     /**
