@@ -38,9 +38,12 @@ Hooks.once('setup', function () {
 
     // Disable sight layer's token vision if GM and option enabled
     if (CONFIG.LESSFOG.NOFURNACE) {
+        debug.log(false, 'token vision button provided by Less Fog module');
         libWrapper.register('lessfog', 'SightLayer.prototype.tokenVision', function (wrapped, ...args) {
             return (game.user.isGM && game.settings.get("lessfog", "showAllToGM")) ? false : wrapped(...args);
         }, 'MIXED');
+    } else {
+        debug.log(false, 'token vision button provided by legacy Furnace module');
     }
 });
 
