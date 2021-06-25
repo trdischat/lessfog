@@ -1,3 +1,30 @@
+export const MODULE_ID = 'lessfog';
+
+/** Class to send debug messages to console if enabled in DevMode module. */
+export class debug {
+    /**
+     * Getter tests if debug is enabled.
+     * @return {boolean}        True if debug is enabled.
+     */
+    static get enabled() {
+        return window.DEV?.getPackageDebugValue(MODULE_ID);
+    }
+    /**
+     * Helper function to output debug messages to console if debug is enabled.
+     * @param {boolean} force    True = output always, False = output only if debugging enabled.
+     * @param  {...any} args     Arguments to pass through to console.log().
+     */
+    static log(force, ...args) {
+        try {
+            if (force || this.enabled) {
+                console.log(MODULE_ID, '|', ...args);
+            }
+        } catch (e) {
+            console.log(`ERROR: ${MODULE_ID} debug logging function failed`, e);
+        }
+    }
+}
+
 /**
  * Set unexplored fog alpha for GMs only (unless configured).
  * @param {number} unexploredDarkness - number between 0 and 1

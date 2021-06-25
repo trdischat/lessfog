@@ -1,6 +1,6 @@
 // Import JavaScript modules
 import { registerSettings } from './module/settings.js';
-import { setUnexploredForPermitted } from './module/lib.js';
+import { setUnexploredForPermitted, debug } from './module/lib.js';
 import { libWrapper } from "./module/shim.js";
 
 CONFIG.LESSFOG = { NOFURNACE: true };
@@ -9,7 +9,7 @@ CONFIG.LESSFOG = { NOFURNACE: true };
 /* Initialize module					*/
 /* ------------------------------------ */
 Hooks.once('init', async function () {
-    console.log('lessfog | Initializing lessfog');
+    debug.log(true, 'Initializing');
 
     // Register custom module settings
     registerSettings();
@@ -27,6 +27,8 @@ Hooks.once('init', async function () {
 /* Setup module							*/
 /* ------------------------------------ */
 Hooks.once('setup', function () {
+    debug.log(true, 'Setup');
+
     // Determine whether legacy Furnace module is active
     if (game.modules.get("furnace")?.active) {
         if (isNewerVersion('2.6.1', game.modules.get("furnace").data.version.match(/[\d.]/g).join(''))) {
@@ -40,6 +42,20 @@ Hooks.once('setup', function () {
             return (game.user.isGM && game.settings.get("lessfog", "showAllToGM")) ? false : wrapped(...args);
         }, 'MIXED');
     }
+});
+
+/* ------------------------------------ */
+/* When ready							*/
+/* ------------------------------------ */
+Hooks.once('ready', function () {
+    debug.log(true, 'Ready');
+});
+
+/* ------------------------------------ */
+/* Devmode Hook                         */
+/* ------------------------------------ */
+Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
+    registerPackageDebugFlag('lessfog');
 });
 
 /* ------------------------------------ */
