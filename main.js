@@ -45,6 +45,18 @@ Hooks.once('setup', function () {
     } else {
         debug.log(false, 'token vision button provided by legacy Furnace module');
     }
+
+    // Allow the GM to see all tokens. Disable this option if Levels module is enabled.
+    if (game.modules.get("levels")?.active) {
+        debug.log(false, 'Levels module enabled; override option to Reveal Tokens to GM');
+    } else {
+        Hooks.on("sightRefresh", layer => {
+            for (let t of canvas.tokens.placeables) {
+                t.visible = (!layer.tokenVision && !t.data.hidden) || (game.settings.get("lessfog", "reveal_tokens") && (game.user.isGM || game.settings.get("lessfog", "affect_all"))) || t.isVisible;
+            }
+        });
+    }
+
 });
 
 /* ------------------------------------ */
@@ -93,15 +105,4 @@ Hooks.on('getSceneControlButtons', controls => {
 // Keep GM's visibility of unexplored areas relatively constant when darkness levels change.
 Hooks.on("lightingRefresh", () => {
     setUnexploredForPermitted(game.settings.get("lessfog", "unexplored_darkness") * (1 - (canvas.lighting.darknessLevel / 4)));
-});
-
-// Allow the GM to see all tokens.
-Hooks.on("sightRefresh", layer => {
-    if (!game.modules.get("levels")?.active) {
-        for (let t of canvas.tokens.placeables) {
-            t.visible = (!layer.tokenVision && !t.data.hidden) || (game.settings.get("lessfog", "reveal_tokens") && (game.user.isGM || game.settings.get("lessfog", "affect_all"))) || t.isVisible;
-        }
-    } else {
-        debug.log(false, 'Levels module enabled; overrides option to Reveal Tokens to GM');
-    }
 });
