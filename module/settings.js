@@ -1,4 +1,4 @@
-import { setUnexploredForPermitted } from '../main.js';
+import { setUnexploredForPermitted } from './lib.js';
 
 export const registerSettings = function () {
     /**
