@@ -18,8 +18,8 @@ Here is a comparison of the defaults in Foundry to the default settings in Less 
 |:--------:|:-------------:|:--------------:|
 |Daylight  |0xEEEEEE       |0xEEEEEE        |
 |Darkness  |0x242448       |0x484864        |
-|Dim       |0.5            |1.0             |
-|Explored  |0.5            |0.4             |
+|Dim       |0.5            |0.8             |
+|Explored  |0.5            |0.3             |
 |Unexplored|1.0            |0.8             |
 
 With Less Fog, you can adjust these settings further to suit your preferences.
