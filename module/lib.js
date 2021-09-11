@@ -3,20 +3,14 @@ export const MODULE_ID = 'lessfog';
 /** Class to send debug messages to console if enabled in DevMode module. */
 export class debug {
     /**
-     * Getter tests if debug is enabled.
-     * @return {boolean}        True if debug is enabled.
-     */
-    static get enabled() {
-        return window.DEV?.getPackageDebugValue(MODULE_ID);
-    }
-    /**
      * Helper function to output debug messages to console if debug is enabled.
      * @param {boolean} force    True = output always, False = output only if debugging enabled.
      * @param  {...any} args     Arguments to pass through to console.log().
      */
     static log(force, ...args) {
         try {
-            if (force || this.enabled) {
+            const enabled = game.modules.get('_dev-mode')?.api?.getPackageDebugValue(MODULE_ID);
+            if (force || enabled) {
                 console.log(MODULE_ID, '|', ...args);
             }
         } catch (e) {
