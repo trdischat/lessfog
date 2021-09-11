@@ -2,9 +2,9 @@
   "name": "lessfog",
   "title": "Less Fog",
   "description": "This module allows adjustments to the appearance of the FOW.",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "minimumCoreVersion": "0.7.4",
-  "compatibleCoreVersion": "0.8.8",
+  "compatibleCoreVersion": "0.8.9",
   "author": "trdischat",
   "esmodules": ["main.js"],
   "dependencies": [
