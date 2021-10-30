@@ -14,13 +14,25 @@ The module allows you to adjust the following global lighting settings:
 
 Here is a comparison of the defaults in Foundry to the default settings in Less Fog:
 
+*Foundry before version 9*
+
 |Setting   |Foundry Default|Less Fog Default|
 |:--------:|:-------------:|:--------------:|
 |Daylight  |0xEEEEEE       |0xEEEEEE        |
 |Darkness  |0x242448       |0x484864        |
-|Dim       |0.5            |0.8             |
+|Dim       |0.5            |0.7             |
 |Explored  |0.5            |0.3             |
 |Unexplored|1.0            |0.8             |
+
+*Foundry version 9 and beyond*
+
+|Setting   |Foundry Default|Less Fog Default|
+|:--------:|:-------------:|:--------------:|
+|Daylight  |0xEEEEEE       |0xEEEEEE        |
+|Darkness  |0x242448       |0x484864        |
+|Dim       |0.75           |0.5             |
+|Explored  |0.5            |0.4             |
+|Unexplored|1.0            |0.7             |
 
 With Less Fog, you can adjust these settings further to suit your preferences.
 
