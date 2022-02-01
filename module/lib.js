@@ -38,6 +38,7 @@ export class debug {
             canvas.sight.refresh();
         } else {
             CONFIG.Canvas.unexploredColor = PIXI.utils.rgb2hex([1 - unexploredDarkness, 1 - unexploredDarkness, 1 - unexploredDarkness]);
+            canvas.sight.updateFogExplorationColors()
             canvas.perception.schedule({sight: {refresh: true}});
         }
     }

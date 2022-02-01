@@ -74,6 +74,7 @@ export const registerSettings = function () {
         config: true,
         onChange: value => {
             CONFIG.Canvas.exploredColor = PIXI.utils.rgb2hex([1 - value, 1 - value, 1 - value]);
+            canvas.sight.updateFogExplorationColors()
         }
     });
     game.settings.register("lessfog", "unexplored_darkness", {
