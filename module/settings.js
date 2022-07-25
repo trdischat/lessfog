@@ -1,52 +1,10 @@
-import { setUnexploredForPermitted } from './lib.js';
-
 export const registerSettings = function () {
     /**
-     * Default values depend on software version.
+     * Option to set fog opacity for the GM.
      */
-    let _DimDefault = 0.7;
-    let _DimSystem = 0.5;
-    let _ExploredDefault = 0.3;
-    let _UnexploredDefault = 0.8;
-
-    if (isNewerVersion(game.version || game.data.version, '0.8.9')) {
-        _DimDefault = 0.5;
-        _DimSystem = 0.75;
-        _ExploredDefault = 0.4;
-        _UnexploredDefault = 0.7;
-    }
-
-    /**
-     * Configuration for global daylight and darkness colors.
-     */
-    new window.Ardittristan.ColorSetting("lessfog", "daylight_color", {
-        name: "Global Daylight Color",
-        hint: "Less Fog default is #EEEEEEFF. Value without this module is also #EEEEEEFF. Use this setting to adjust the color of fully bright areas when the scene Darkness Level slider is set to 0. If the Perfect Vision module is installed, you can also adjust this color separately for each scene.",
-        label: "Daylight Color",
-        restricted: true,
-        defaultColor: "#eeeeeeff",
-        scope: "world",
-        onChange: (value) => {
-            CONFIG.Canvas.daylightColor = parseInt(value.substring(1, 7), 16);
-        }
-    })
-    new window.Ardittristan.ColorSetting("lessfog", "darkness_color", {
-        name: "Global Darkness Color",
-        hint: "Less Fog default is #484864FF. Value without this module is #242448FF. Use this setting in combination with the Darkness-Dimming setting below to set the darkness of visible but fully dark areas when the scene Darkness Level slider is set to 1. If the Perfect Vision module is installed, you can also adjust this color separately for each scene.",
-        label: "Darkness Color",
-        restricted: true,
-        defaultColor: "#484864ff",
-        scope: "world",
-        onChange: (value) => {
-            CONFIG.Canvas.darknessColor = parseInt(value.substring(1, 7), 16);
-        }
-    })
-    /**
-     * Configuration for dim, explored, and unexplored settings.
-     */
-    game.settings.register("lessfog", "dim_darkness", {
-        name: "Darkness - Dimming",
-        hint: "Relative darkness in dim areas (0 to 1 where 1 is fully dark). Use this setting in combination with the Darkness color above to adjust the impact of the scene Darkness Level slider. Less Fog module default is " + _DimDefault + ". Value without this module is " + _DimSystem + ".",
+     game.settings.register("lessfog", "fog_opacity", {
+        name: "Fog Opacity",
+        hint: "Opacity of fog layer. By default only for GMs (0 to 1 where 0 is fully transparent and 1 is fully opaque). Less Fog module default is 0.75. Value without this module is 1.0.",
         scope: "world",
         type: Number,
         range: {
@@ -54,46 +12,9 @@ export const registerSettings = function () {
             max: 1,
             step: 0.05
         },
-        default: _DimDefault,
+        default: 0.75,
         config: true,
-        onChange: value => {
-            CONFIG.Canvas.lightLevels.dim = 1 - value;
-        }
-    });
-    game.settings.register("lessfog", "explored_darkness", {
-        name: "Darkness - Explored",
-        hint: "Darkness level of Explored fog (0 to 1 where 1 is pitch black). MUST RESET FOW TO SEE CHANGE! Less Fog module default is " + _ExploredDefault + ". Value without this module is 0.5.",
-        scope: "world",
-        type: Number,
-        range: {
-            min: 0,
-            max: 1,
-            step: 0.05
-        },
-        default: _ExploredDefault,
-        config: true,
-        onChange: value => {
-            CONFIG.Canvas.exploredColor = PIXI.utils.rgb2hex([1 - value, 1 - value, 1 - value]);
-            if (isNewerVersion(game.version || game.data.version, '0.8.2')) {
-                canvas.sight.updateFogExplorationColors()
-            }
-        }
-    });
-    game.settings.register("lessfog", "unexplored_darkness", {
-        name: "Darkness - Unexplored",
-        hint: "Darkness level of Unexplored fog. By default only for GMs (0 to 1 where 1 is pitch black). Less Fog module default is " + _UnexploredDefault + ". Value without this module is 1.0.",
-        scope: "world",
-        type: Number,
-        range: {
-            min: 0,
-            max: 1,
-            step: 0.05
-        },
-        default: _UnexploredDefault,
-        config: true,
-        onChange: value => {
-            setUnexploredForPermitted(value);
-        }
+        onChange: s => { canvas.draw(); }
     });
     /**
      * Option to reveal tokens to the GM.

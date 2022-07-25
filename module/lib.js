@@ -1,5 +1,23 @@
 export const MODULE_ID = 'lessfog';
 
+/**
+ * Helper function to test game generation
+ * @param {Number} val   Minimum generation (major version number)
+ * @returns {Boolean}    True if game generation equals or exceed minimum
+ */
+ export function minGen(val) {
+    return val <= ( game.release?.generation || parseInt((game.version || game.data.version).split(".")[1]) );
+} 
+
+/**
+ * Helper function to test game version
+ * @param {String} val   Minimum version (full version string)
+ * @returns {Boolean}    True if game version equals or exceeds minimum
+ */
+export function minVer(val) {
+    return !(isNewerVersion(val, game.version || game.data.version));
+} 
+
 /** Class to send debug messages to console if enabled in DevMode module. */
 export class debug {
   /**
@@ -23,23 +41,4 @@ export class debug {
           console.log(`ERROR: ${MODULE_ID} debug logging function failed`, e);
       }
   }
-}
-
-/**
- * Set unexplored fog alpha for GMs only (unless configured).
- * @param {number} unexploredDarkness - number between 0 and 1
- */
- export function setUnexploredForPermitted(unexploredDarkness) {
-    if (game.user.isGM || game.settings.get("lessfog", "affect_all")) {
-        if (isNewerVersion('0.7.6', game.version || game.data.version)) {
-            canvas.sight.fog.unexplored.alpha = unexploredDarkness;
-        } else if (isNewerVersion('0.8.2', game.version || game.data.version)) {
-            CONFIG.Canvas.unexploredColor = PIXI.utils.rgb2hex([1 - unexploredDarkness, 1 - unexploredDarkness, 1 - unexploredDarkness]);
-            canvas.sight.refresh();
-        } else {
-            CONFIG.Canvas.unexploredColor = PIXI.utils.rgb2hex([1 - unexploredDarkness, 1 - unexploredDarkness, 1 - unexploredDarkness]);
-            canvas.sight.updateFogExplorationColors()
-            canvas.perception.schedule({sight: {refresh: true}});
-        }
-    }
 }

@@ -2,6 +2,10 @@
 
 Module to enhance visibility for the GM and Players in Foundry VTT.  
 
+## <span style='color:red'>WARNING</span>
+
+The text that follows has not been updated for the latest version of the module that works with Foundry VTT version 10.
+
 ## Darkness Levels
 
 The module allows you to adjust the following global lighting settings:
