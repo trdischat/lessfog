@@ -1,5 +1,5 @@
 // Import JavaScript modules
-import { registerSettings } from './module/settings.js';
+import { loadSettings, registerSettings, settings } from './module/settings.js';
 import { debug } from './module/lib.js';
 import { libWrapper } from "./module/shim.js";
 
@@ -22,6 +22,8 @@ Hooks.once('init', async function () {
 Hooks.once('setup', function () {
     debug.log(true, 'Setup');
 
+    loadSettings();
+
     // Determine whether Perfect Vision module is active
     // if (game.modules.get("perfect-vision")?.active) {
     //         CONFIG.LESSFOG.NOPV = false;
@@ -31,8 +33,8 @@ Hooks.once('setup', function () {
     if (CONFIG.LESSFOG.NOPV) {
         debug.log(false, 'Token vision button provided by Less Fog module');
         libWrapper.register('lessfog', 'CanvasVisibility.prototype.tokenVision', function (wrapped, ...args) {
-            return (game.user.isGM && game.settings.get("lessfog", "showAllToGM")) ? false : wrapped(...args);
-        }, 'MIXED');
+            return (game.user.isGM && settings.showAllToGM) ? false : wrapped(...args);
+        }, 'MIXED', { perf_mode: 'FAST' });
     } else {
         debug.log(false, 'Token vision button provided by Perfect Vision module');
     }
@@ -42,8 +44,11 @@ Hooks.once('setup', function () {
         debug.log(false, 'Levels module enabled; override option to Reveal Tokens to GM');
     } else {
         Hooks.on("sightRefresh", layer => {
-            for (let t of canvas.tokens.placeables) {
-                t.visible = (!layer.tokenVision && !t.document.hidden) || (game.settings.get("lessfog", "reveal_tokens") && (game.user.isGM || game.settings.get("lessfog", "affect_all"))) || t.isVisible;
+            let revealAll = settings.reveal_tokens && (game.user.isGM || settings.affect_all);
+            if (revealAll) {
+                for (let t of canvas.tokens.placeables) {
+                    t.visible = true;
+                }
             }
         });
     }

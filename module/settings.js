@@ -1,3 +1,4 @@
+export const settings = {};
 export const registerSettings = function () {
     /**
      * Option to set fog opacity for the GM.
@@ -14,7 +15,10 @@ export const registerSettings = function () {
         },
         default: 0.75,
         config: true,
-        onChange: s => { canvas.draw(); }
+        onChange: s => {
+            settings.fog_opacity = s;
+            canvas.draw();
+        }
     });
     /**
      * Option to reveal tokens to the GM.
@@ -26,7 +30,10 @@ export const registerSettings = function () {
         type: Boolean,
         default: true,
         config: true,
-        onChange: s => { canvas.perception.initialize(); }
+        onChange: s => {
+            settings.reveal_tokens = s;
+            canvas.perception.initialize();
+        }
     });
     /**
      * Option to affect all players
@@ -38,7 +45,10 @@ export const registerSettings = function () {
         type: Boolean,
         default: false,
         config: true,
-        onChange: s => { canvas.perception.initialize(); }
+        onChange: s => {
+            settings.affect_all = s;
+            canvas.perception.initialize();
+        }
     });
     /**
      * Hidden option used by GM vision button
@@ -49,6 +59,15 @@ export const registerSettings = function () {
         config: false,
         default: false,
         type: Boolean,
-        onChange: value => { canvas.perception.initialize(); }
+        onChange: value => {
+            settings.showAllToGM = value;
+            canvas.perception.initialize();
+        }
     });
+}
+export const loadSettings = function () {
+    settings.fog_opacity = game.settings.get("lessfog", "fog_opacity");
+    settings.reveal_tokens = game.settings.get("lessfog", "reveal_tokens");
+    settings.affect_all = game.settings.get("lessfog", "affect_all");
+    settings.showAllToGM = game.settings.get("lessfog", "showAllToGM");
 }
