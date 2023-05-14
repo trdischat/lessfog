@@ -55,7 +55,7 @@ export const registerSettings = function () {
      */
     game.settings.register("lessfog", "showAllToGM", {
         name: "Show All to GM",
-        scope: "world",
+        scope: "client",
         config: false,
         default: false,
         type: Boolean,
