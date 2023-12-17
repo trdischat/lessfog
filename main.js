@@ -1,6 +1,6 @@
 // Import JavaScript modules
 import { loadSettings, registerSettings, settings } from './module/settings.js';
-import { debug, minGen } from './module/lib.js';
+import { debug } from './module/lib.js';
 import { libWrapper } from "./module/shim.js";
 
 CONFIG.LESSFOG = { NOPV: true };
@@ -44,21 +44,10 @@ Hooks.once('setup', function () {
     if (game.modules.get("levels")?.active) {
         debug.log(false, 'Levels module enabled; override option to Reveal Tokens to GM');
     } else {
-        if (minGen(11)) {
-            libWrapper.register('lessfog', 'Token.prototype.isVisible', function (wrapped, ...args) {
-                let result = wrapped(...args);
-                return (settings.reveal_tokens && (game.user.isGM || settings.affect_all)) ? true : result;
-            }, 'MIXED', { perf_mode: 'FAST' });
-        } else {
-            Hooks.on("sightRefresh", layer => {
-                let revealAll = settings.reveal_tokens && (game.user.isGM || settings.affect_all);
-                if (revealAll) {
-                    for (let t of canvas.tokens.placeables) {
-                        t.visible = true;
-                    }
-                }
-            });
-        }
+        libWrapper.register('lessfog', 'Token.prototype.isVisible', function (wrapped, ...args) {
+            let result = wrapped(...args);
+            return (settings.reveal_tokens && (game.user.isGM || settings.affect_all)) ? true : result;
+        }, 'MIXED', { perf_mode: 'FAST' });
     }
 });
 
