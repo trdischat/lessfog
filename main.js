@@ -106,6 +106,6 @@ Hooks.on('getSceneControlButtons', controls => {
 Hooks.on("drawCanvasVisibility", layer => {
     if (game.user.isGM || game.settings.get("lessfog", "affect_all")) {
         debug.log(false,'Add alpha filter to fog layer');
-        layer.filters.push(new PIXI.filters.AlphaFilter(game.settings.get("lessfog", "fog_opacity")));
+        layer.filters.push(new PIXI.AlphaFilter(game.settings.get("lessfog", "fog_opacity")));
     }
 });
