@@ -3,7 +3,7 @@ import { loadSettings, registerSettings, settings } from './module/settings.js';
 import { debug } from './module/lib.js';
 import { libWrapper } from "./module/shim.js";
 
-CONFIG.LESSFOG = { NOPV: true };
+CONFIG.LESSFOG = { addTokenVisionButton: true };
 
 /* ------------------------------------ */
 /* Initialize module					*/
@@ -24,20 +24,19 @@ Hooks.once('setup', function () {
 
     loadSettings();
 
-    // Determine whether Perfect Vision module is active
-    // if (game.modules.get("perfect-vision")?.active) {
-    //         CONFIG.LESSFOG.NOPV = false;
-    // }
+    // PF2E game system provides token vision button
+    if (game.system.id === "pf2e") {
+        CONFIG.LESSFOG.addTokenVisionButton = false;
+        debug.log(false, 'Token vision button provided by PF2e game system');
+    }
 
     // Disable sight layer's token vision if GM and option enabled
-    if (CONFIG.LESSFOG.NOPV) {
+    if (CONFIG.LESSFOG.addTokenVisionButton) {
         debug.log(false, 'Token vision button provided by Less Fog module');
         libWrapper.register('lessfog', 'CanvasVisibility.prototype.tokenVision', function (wrapped, ...args) {
             let result = wrapped(...args);
             return (game.user.isGM && settings.showAllToGM) ? false : result;
         }, 'MIXED', { perf_mode: 'FAST' });
-    } else {
-        debug.log(false, 'Token vision button provided by Perfect Vision module');
     }
 
     // Allow the GM to see all tokens. Disable this option if Levels module is enabled.
@@ -76,7 +75,7 @@ Hooks.once('canvasReady', function () {
 /* ------------------------------------ */
 
 Hooks.on('getSceneControlButtons', controls => {
-    if (CONFIG.LESSFOG.NOPV) {
+    if (CONFIG.LESSFOG.addTokenVisionButton) {
         let tokenButton = controls.find(b => b.name == "token")
         if (tokenButton) {
             tokenButton.tools.push({
