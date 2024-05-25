@@ -22,6 +22,8 @@ In response to requests from folks playing games like Lancer, there is now an op
 
 ![New Button](images/newbutton.jpg)
 
+The Pathfinder 2e game system already has a button with a similar function. Therefore, the GM Vision button in this module will not appear when using the PF2e system.
+
 ## Older Versions of the Module
 
 Click [here](README_Pre_v10.md) for instructions on using this module with versions of Foundry VTT *before version 10*.
