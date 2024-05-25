@@ -58,13 +58,6 @@ Hooks.once('ready', function () {
 });
 
 /* ------------------------------------ */
-/* Devmode Hook                         */
-/* ------------------------------------ */
-Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
-    registerPackageDebugFlag('lessfog');
-});
-
-/* ------------------------------------ */
 /* When Canvas is ready					*/
 /* ------------------------------------ */
 Hooks.once('canvasReady', function () {
