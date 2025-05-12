@@ -68,19 +68,16 @@ Hooks.once('canvasReady', function () {
 /* ------------------------------------ */
 
 Hooks.on('getSceneControlButtons', controls => {
-    if (CONFIG.LESSFOG.addTokenVisionButton) {
-        let tokenButton = controls.find(b => b.name == "token")
-        if (tokenButton) {
-            tokenButton.tools.push({
-                name: "vision",
-                title: "Toggle GM Vision",
-                icon: "far fa-eye-slash",
-                toggle: true,
-                active: game.settings.get("lessfog", "showAllToGM"),
-                visible: game.user.isGM,
-                onClick: (value) => game.settings.set("lessfog", "showAllToGM", value)
-            });
-        }
+    if (CONFIG.LESSFOG.addTokenVisionButton && game.user.isGM) {
+        controls.tokens.tools.lessfogGMVision = {
+            name: "lessfogGMVision",
+            title: "Toggle GM Vision",
+            icon: "far fa-eye-slash",
+            toggle: true,
+            active: game.settings.get("lessfog", "showAllToGM"),
+            visible: game.user.isGM,
+            onChange: (event, toggled) => game.settings.set("lessfog", "showAllToGM", toggled)
+        };
     }
 });
 
